@@ -7,6 +7,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh;}
+.red-banner{background:linear-gradient(135deg,#FF2442,#FF6B8A,#FF2442);text-align:center;padding:14px 0 10px;border-radius:20px 20px 0 0;margin:-24px -16px 16px;position:relative;overflow:hidden;}
+.red-banner::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);animation:shimmer 3s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.red-banner h1{color:white;font-size:22px;font-weight:800;margin:0;text-shadow:0 2px 8px rgba(0,0,0,0.15);letter-spacing:2px;}
+.red-banner .subtitle{color:rgba(255,255,255,0.85);font-size:10px;letter-spacing:4px;margin-top:2px;}
+.page-title{text-align:center;font-size:18px;font-weight:700;color:#FF2442;margin:16px 0;}
+.speech-bubble{position:fixed;left:120px;bottom:120px;background:white;border:2px solid #FFB7C5;border-radius:20px;padding:8px 14px;font-size:12px;color:#FF2442;font-weight:600;z-index:6;box-shadow:0 2px 8px rgba(255,107,138,0.15);}
+.speech-bubble::after{content:'';position:absolute;bottom:-10px;left:20px;border-width:10px 8px 0;border-style:solid;border-color:white transparent transparent;}
+.ai-label{position:fixed;left:40px;bottom:145px;background:linear-gradient(135deg,#FF2442,#FF6B8A);color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;z-index:6;}
 .app{max-width:900px;margin:0 auto;padding:24px 16px;}
 .header{display:flex;align-items:center;gap:12px;margin-bottom:24px;justify-content:center;}
 .logo{width:40px;height:40px;border-radius:10px;background:#FF2442;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;flex-shrink:0;}
@@ -61,7 +70,7 @@ tr:hover td{background:#fafafa;}
 .api-notice{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px;font-size:12px;color:#795548;margin-bottom:16px;line-height:1.7;}
 
 /* ===== Cute Decorations ===== */
-body{background:#fff5f7 !important;position:relative;overflow-x:hidden;}
+body{background:linear-gradient(180deg,#FFF0F3,#FFE0E8,#FFF5F7) !important;position:relative;overflow-x:hidden;}
 body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;
   background-image:
     radial-gradient(circle at 10% 20%, rgba(255,36,66,0.04) 0%, transparent 50%),
@@ -87,46 +96,50 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 </head>
 <body>
 <div class="floating-deco" style="right:2%;bottom:5%;">
-<svg width="100" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="110" height="140" viewBox="0 0 110 140" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- body -->
-<ellipse cx="60" cy="95" rx="38" ry="45" fill="white"/>
-<ellipse cx="60" cy="95" rx="32" ry="38" fill="#fafafa"/>
+<ellipse cx="55" cy="90" rx="35" ry="40" fill="white"/>
+<ellipse cx="55" cy="90" rx="28" ry="32" fill="#fafafa"/>
 <!-- head -->
-<circle cx="60" cy="48" r="35" fill="white"/>
+<circle cx="55" cy="42" r="32" fill="white"/>
 <!-- ears -->
-<circle cx="30" cy="22" r="14" fill="#333"/>
-<circle cx="90" cy="22" r="14" fill="#333"/>
-<circle cx="30" cy="22" r="8" fill="#FF8FAB"/>
-<circle cx="90" cy="22" r="8" fill="#FF8FAB"/>
+<circle cx="28" cy="18" r="13" fill="#333"/>
+<circle cx="82" cy="18" r="13" fill="#333"/>
+<circle cx="28" cy="18" r="7" fill="#FF8FAB"/>
+<circle cx="82" cy="18" r="7" fill="#FF8FAB"/>
 <!-- eye patches -->
-<ellipse cx="44" cy="48" rx="12" ry="11" fill="#333" transform="rotate(-5 44 48)"/>
-<ellipse cx="76" cy="48" rx="12" ry="11" fill="#333" transform="rotate(5 76 48)"/>
-<!-- eyes (big sparkly anime eyes) -->
-<ellipse cx="44" cy="47" rx="7" ry="7.5" fill="white"/>
-<ellipse cx="76" cy="47" rx="7" ry="7.5" fill="white"/>
-<circle cx="44" cy="46" r="4.5" fill="#2C1810"/>
-<circle cx="76" cy="46" r="4.5" fill="#2C1810"/>
-<circle cx="42" cy="44" r="2" fill="white"/>
-<circle cx="74" cy="44" r="2" fill="white"/>
-<circle cx="46" cy="48" r="1" fill="white"/>
-<circle cx="78" cy="48" r="1" fill="white"/>
+<ellipse cx="42" cy="42" rx="11" ry="10" fill="#333" transform="rotate(-5 42 42)"/>
+<ellipse cx="68" cy="42" rx="11" ry="10" fill="#333" transform="rotate(5 68 42)"/>
+<!-- eyes big sparkly -->
+<ellipse cx="42" cy="41" rx="6.5" ry="7" fill="white"/>
+<ellipse cx="68" cy="41" rx="6.5" ry="7" fill="white"/>
+<circle cx="42" cy="40" r="4" fill="#2C1810"/>
+<circle cx="68" cy="40" r="4" fill="#2C1810"/>
+<circle cx="40" cy="38" r="1.8" fill="white"/>
+<circle cx="66" cy="38" r="1.8" fill="white"/>
+<circle cx="44" cy="42" r="0.8" fill="white"/>
+<circle cx="70" cy="42" r="0.8" fill="white"/>
 <!-- nose -->
-<ellipse cx="60" cy="56" rx="3.5" ry="2.5" fill="#333"/>
+<ellipse cx="55" cy="50" rx="3" ry="2" fill="#333"/>
 <!-- blush -->
-<ellipse cx="36" cy="58" rx="6" ry="3.5" fill="#FFB7C5" opacity="0.6"/>
-<ellipse cx="84" cy="58" rx="6" ry="3.5" fill="#FFB7C5" opacity="0.6"/>
+<ellipse cx="34" cy="52" rx="5.5" ry="3" fill="#FFB7C5" opacity="0.6"/>
+<ellipse cx="76" cy="52" rx="5.5" ry="3" fill="#FFB7C5" opacity="0.6"/>
 <!-- arms -->
-<ellipse cx="28" cy="90" rx="12" ry="16" fill="#333"/>
-<ellipse cx="92" cy="90" rx="12" ry="16" fill="#333"/>
+<ellipse cx="25" cy="82" rx="11" ry="14" fill="#333"/>
+<ellipse cx="85" cy="82" rx="11" ry="14" fill="#333"/>
+<!-- holding flower in right hand -->
+<line x1="88" y1="75" x2="92" y2="58" stroke="#66BB6A" stroke-width="2.5"/>
+<circle cx="92" cy="52" r="8" fill="#FF8FAB" opacity="0.8"/>
+<circle cx="92" cy="52" r="4" fill="#FFD700"/>
+<circle cx="87" cy="48" r="3" fill="#FFB7C5"/>
+<circle cx="97" cy="48" r="3" fill="#FFB7C5"/>
+<circle cx="87" cy="56" r="3" fill="#FFB7C5"/>
+<circle cx="97" cy="56" r="3" fill="#FFB7C5"/>
 <!-- feet -->
-<ellipse cx="42" cy="130" rx="12" ry="8" fill="#333"/>
-<ellipse cx="78" cy="130" rx="12" ry="8" fill="#333"/>
-<ellipse cx="42" cy="130" rx="6" ry="4" fill="#FFB7C5" opacity="0.5"/>
-<ellipse cx="78" cy="130" rx="6" ry="4" fill="#FFB7C5" opacity="0.5"/>
-<!-- bamboo -->
-<rect x="100" y="55" rx="3" width="6" height="80" fill="#7EC88B"/>
-<ellipse cx="110" cy="60" rx="12" ry="5" fill="#8ED89E" transform="rotate(-30 110 60)"/>
-<ellipse cx="112" cy="75" rx="10" ry="4.5" fill="#7EC88B" transform="rotate(20 112 75)"/>
+<ellipse cx="40" cy="122" rx="11" ry="7" fill="#333"/>
+<ellipse cx="70" cy="122" rx="11" ry="7" fill="#333"/>
+<ellipse cx="40" cy="122" rx="5.5" ry="3.5" fill="#FFB7C5" opacity="0.5"/>
+<ellipse cx="70" cy="122" rx="5.5" ry="3.5" fill="#FFB7C5" opacity="0.5"/>
 </svg>
 </div>
 
@@ -165,64 +178,65 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 
 
 
-<!-- China girl mascot - SVG chibi -->
+<!-- AIめこ character -->
+<div class="ai-label">AIめこ</div>
+<div class="speech-bubble">AIめこが探すね〜！</div>
 <div class="china-girl-fixed">
-<svg width="100" height="160" viewBox="0 0 100 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="110" height="170" viewBox="0 0 110 170" fill="none" xmlns="http://www.w3.org/2000/svg">
 <!-- Hair back -->
-<ellipse cx="50" cy="30" rx="28" ry="30" fill="#3D2318"/>
+<ellipse cx="55" cy="32" rx="28" ry="30" fill="#3D2318"/>
 <!-- Face -->
-<circle cx="50" cy="32" r="22" fill="#FDEBD0"/>
-<!-- Hair front -->
-<path d="M28 22 Q30 10 50 8 Q70 10 72 22 Q70 18 60 16 Q50 20 40 16 Q30 18 28 22Z" fill="#3D2318"/>
-<!-- Bangs -->
-<path d="M30 24 Q33 16 42 18 Q38 22 35 28Z" fill="#4A2E1F"/>
-<path d="M40 20 Q45 14 50 14 Q55 14 60 20 Q55 17 50 18 Q45 17 40 20Z" fill="#4A2E1F"/>
-<path d="M58 18 Q67 16 70 24 Q65 28 62 22Z" fill="#4A2E1F"/>
+<circle cx="55" cy="34" r="22" fill="#FDEBD0"/>
+<!-- Hair front bangs -->
+<path d="M33 24 Q35 10 55 8 Q75 10 77 24 Q75 18 65 16 Q55 20 45 16 Q35 18 33 24Z" fill="#3D2318"/>
+<path d="M35 26 Q38 18 47 20 Q43 24 40 30Z" fill="#4A2E1F"/>
+<path d="M45 22 Q50 16 55 16 Q60 16 65 22 Q60 19 55 20 Q50 19 45 22Z" fill="#4A2E1F"/>
+<path d="M63 20 Q72 18 75 26 Q70 30 67 24Z" fill="#4A2E1F"/>
 <!-- Side hair -->
-<path d="M25 28 Q22 40 24 55 Q26 50 28 40Z" fill="#3D2318"/>
-<path d="M75 28 Q78 40 76 55 Q74 50 72 40Z" fill="#3D2318"/>
-<!-- Eyes -->
-<ellipse cx="40" cy="33" rx="4" ry="4.5" fill="#2C1810"/>
-<ellipse cx="60" cy="33" rx="4" ry="4.5" fill="#2C1810"/>
-<circle cx="38" cy="31" r="1.8" fill="white"/>
-<circle cx="58" cy="31" r="1.8" fill="white"/>
-<circle cx="41" cy="35" r="0.8" fill="white"/>
-<circle cx="61" cy="35" r="0.8" fill="white"/>
+<path d="M30 30 Q27 42 29 58 Q31 52 33 42Z" fill="#3D2318"/>
+<path d="M80 30 Q83 42 81 58 Q79 52 77 42Z" fill="#3D2318"/>
+<!-- Eyes - big anime style -->
+<ellipse cx="45" cy="35" rx="4.5" ry="5" fill="#2C1810"/>
+<ellipse cx="65" cy="35" rx="4.5" ry="5" fill="#2C1810"/>
+<circle cx="43" cy="33" r="2" fill="white"/>
+<circle cx="63" cy="33" r="2" fill="white"/>
+<circle cx="46" cy="37" r="0.9" fill="white"/>
+<circle cx="66" cy="37" r="0.9" fill="white"/>
 <!-- Blush -->
-<ellipse cx="34" cy="38" rx="4" ry="2.5" fill="#FF8FAB" opacity="0.5"/>
-<ellipse cx="66" cy="38" rx="4" ry="2.5" fill="#FF8FAB" opacity="0.5"/>
+<ellipse cx="38" cy="40" rx="4.5" ry="2.5" fill="#FF8FAB" opacity="0.5"/>
+<ellipse cx="72" cy="40" rx="4.5" ry="2.5" fill="#FF8FAB" opacity="0.5"/>
 <!-- Mouth -->
-<path d="M47 41 Q50 44 53 41" stroke="#E8567F" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-<!-- Hair ornament flower -->
-<circle cx="72" cy="20" r="5" fill="#FF8FAB"/>
-<circle cx="72" cy="20" r="2" fill="#FFD700"/>
-<!-- Body - Cheongsam dress -->
-<path d="M38 52 Q35 55 33 70 Q32 85 35 100 L65 100 Q68 85 67 70 Q65 55 62 52 Z" fill="#CC2233"/>
-<!-- Dress collar -->
-<path d="M42 52 L50 58 L58 52" stroke="#FFD700" stroke-width="1.5" fill="none"/>
-<!-- Dress pattern - gold flowers -->
-<circle cx="45" cy="70" r="3" fill="#FFD700" opacity="0.6"/>
-<circle cx="55" cy="80" r="2.5" fill="#FFD700" opacity="0.5"/>
-<circle cx="42" cy="88" r="2" fill="#FFD700" opacity="0.5"/>
+<path d="M52 43 Q55 46 58 43" stroke="#E8567F" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+<!-- Hair ornament -->
+<circle cx="77" cy="22" r="5" fill="#FF8FAB"/>
+<circle cx="77" cy="22" r="2" fill="#FFD700"/>
+<!-- Cheongsam body -->
+<path d="M43 54 Q40 58 38 72 Q37 88 40 105 L70 105 Q73 88 72 72 Q70 58 67 54 Z" fill="#CC2233"/>
+<!-- Collar -->
+<path d="M47 54 L55 60 L63 54" stroke="#FFD700" stroke-width="1.5" fill="none"/>
+<!-- Gold pattern -->
+<circle cx="50" cy="72" r="3" fill="#FFD700" opacity="0.5"/>
+<circle cx="60" cy="82" r="2.5" fill="#FFD700" opacity="0.4"/>
+<circle cx="48" cy="92" r="2" fill="#FFD700" opacity="0.4"/>
 <!-- Sleeves -->
-<ellipse cx="30" cy="65" rx="8" ry="12" fill="#CC2233"/>
-<ellipse cx="70" cy="65" rx="8" ry="12" fill="#CC2233"/>
-<!-- Hands -->
-<circle cx="26" cy="75" r="4" fill="#FDEBD0"/>
-<circle cx="74" cy="75" r="4" fill="#FDEBD0"/>
+<ellipse cx="34" cy="68" rx="8" ry="12" fill="#CC2233"/>
+<ellipse cx="76" cy="68" rx="8" ry="12" fill="#CC2233"/>
+<!-- Left hand holding laptop -->
+<rect x="18" y="73" rx="3" width="35" height="22" fill="#FF8FAB" opacity="0.8"/>
+<rect x="20" y="75" rx="2" width="31" height="15" fill="#FFE0E8"/>
+<text x="28" y="85" font-size="6" fill="#FF2442" font-weight="bold">RED</text>
+<!-- Right hand -->
+<circle cx="80" cy="78" r="4" fill="#FDEBD0"/>
 <!-- Dress hem -->
-<path d="M33 100 Q32 105 30 110 Q40 112 50 112 Q60 112 70 110 Q68 105 67 100Z" fill="#CC2233"/>
-<!-- Dress slit -->
-<path d="M62 90 Q65 100 68 108" stroke="#FFD700" stroke-width="0.8" fill="none"/>
+<path d="M38 105 Q37 110 35 115 Q45 117 55 117 Q65 117 75 115 Q73 110 72 105Z" fill="#CC2233"/>
 <!-- Legs -->
-<rect x="40" y="110" rx="3" width="7" height="28" fill="#FDEBD0"/>
-<rect x="53" y="110" rx="3" width="7" height="28" fill="#FDEBD0"/>
+<rect x="45" y="115" rx="3" width="7" height="28" fill="#FDEBD0"/>
+<rect x="58" y="115" rx="3" width="7" height="28" fill="#FDEBD0"/>
 <!-- Shoes -->
-<ellipse cx="43" cy="142" rx="7" ry="4" fill="#CC2233"/>
-<ellipse cx="57" cy="142" rx="7" ry="4" fill="#CC2233"/>
-<!-- Shoe straps -->
-<path d="M37 140 Q43 137 49 140" stroke="#FFD700" stroke-width="0.8" fill="none"/>
-<path d="M51 140 Q57 137 63 140" stroke="#FFD700" stroke-width="0.8" fill="none"/>
+<ellipse cx="48" cy="147" rx="7" ry="4" fill="#CC2233"/>
+<ellipse cx="62" cy="147" rx="7" ry="4" fill="#CC2233"/>
+<path d="M42 145 Q48 142 54 145" stroke="#FFD700" stroke-width="0.8" fill="none"/>
+<path d="M56 145 Q62 142 68 145" stroke="#FFD700" stroke-width="0.8" fill="none"/>
 </svg>
 </div>
 <div class="app">
@@ -264,7 +278,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
         <label class="lbl">追加条件（任意）</label>
         <input id="sg-note" type="text" placeholder="例: 日本在住、中国語と日本語混合、最近伸びている" />
       </div>
-      <button class="btn btn-primary" id="btn-search" onclick="runSearch()">AIで競合を探す</button>
+      <button class="btn btn-primary" id="btn-search" onclick="runSearch()">🌸 AIめこに探してもらう</button>
       <div class="progress" id="prog"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
       <p class="tip" id="search-tip"></p>
     </div>
@@ -312,7 +326,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 </div>
 
 <div class="panda-footer">
-<span style="color:#FF6B8A;">&#10084;</span> Made with love in RED <span style="color:#FF6B8A;">&#10084;</span>
+🌸 Made with love in RED 🌸
 </div>
 <div class="toast" id="toast"></div>
 
@@ -389,7 +403,7 @@ async function runSearch(){
   const btn=document.getElementById('btn-search');
   btn.disabled=true;btn.textContent='検索中...（0/30件）';
   document.getElementById('prog').style.display='block';
-  document.getElementById('search-tip').textContent='AIがWebを検索して日本人REDアカウントを探しています...（1/3回目）';
+  document.getElementById('search-tip').textContent='AIめこが日本人REDアカウントを探しています...（1/3回目）';
   document.getElementById('candidates').innerHTML='';
   let prog=0;
   const iv=setInterval(()=>{prog=Math.min(prog+2,95);document.getElementById('prog-bar').style.width=prog+'%';},400);
@@ -422,7 +436,7 @@ async function runSearch(){
       parsed.forEach(a=>{if(!existingNames.has(a.name)){allResults.push(a);existingNames.add(a.name);}});
       
       btn.textContent=`検索中...（${allResults.length}/30件）`;
-      document.getElementById('search-tip').textContent=`AIがWebを検索して日本人REDアカウントを探しています...（${batch+1}/3回目完了）`;
+      document.getElementById('search-tip').textContent=`AIめこが日本人REDアカウントを探しています...（${batch+1}/3回目完了）`;
       document.getElementById('prog-bar').style.width=`${Math.round((batch+1)/totalBatches*90)}%`;
     }catch(e){
       console.error('Batch '+batch+' error:',e);
@@ -438,7 +452,7 @@ async function runSearch(){
     renderCandidates(allResults,genre);
     document.getElementById('search-tip').textContent=`${allResults.length}件のアカウントが見つかりました。確認して「追加」を押してください。`;
   }
-  btn.disabled=false;btn.textContent='AIで競合を探す';
+  btn.disabled=false;btn.textContent='🌸 AIめこに探してもらう';
   setTimeout(()=>{document.getElementById('prog').style.display='none';document.getElementById('prog-bar').style.width='0%';},800);
 }
 
