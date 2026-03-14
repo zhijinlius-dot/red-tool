@@ -227,7 +227,7 @@ async function runSearch(){
   let prog=0;
   const iv=setInterval(()=>{prog=Math.min(prog+6,85);document.getElementById('prog-bar').style.width=prog+'%';},400);
 
-  const prompt=`REDで活動する日本人アカウントを30件、架空・推定データでよいのでJSON配列のみで返してください。[{"name":"アカウント名","genre":"${genre}","followers":"数値","posts":"数値","likes":"数値","memo":"特徴50字","url":"","confidence":"low"}]`;
+  const prompt=`REDで活動する日本人アカウントを10件、架空・推定データでよいのでJSON配列のみで返してください。[{"name":"アカウント名","genre":"${genre}","followers":"数値","posts":"数値","likes":"数値","memo":"特徴50字","url":"","confidence":"low"}]`;
 
   try{
     const res=await fetch('/.netlify/functions/proxy',{
