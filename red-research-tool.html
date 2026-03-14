@@ -220,42 +220,56 @@ async function runSearch(){
   const size=document.getElementById('sg-size').value;
   const note=document.getElementById('sg-note').value.trim();
   const btn=document.getElementById('btn-search');
-  btn.disabled=true;btn.textContent='検索中...';
+  btn.disabled=true;btn.textContent='検索中...（0/30件）';
   document.getElementById('prog').style.display='block';
-  document.getElementById('search-tip').textContent='AIがWebを検索して日本人REDアカウントを探しています...';
+  document.getElementById('search-tip').textContent='AIがWebを検索して日本人REDアカウントを探しています...（1/3回目）';
   document.getElementById('candidates').innerHTML='';
   let prog=0;
-  const iv=setInterval(()=>{prog=Math.min(prog+6,85);document.getElementById('prog-bar').style.width=prog+'%';},400);
+  const iv=setInterval(()=>{prog=Math.min(prog+2,95);document.getElementById('prog-bar').style.width=prog+'%';},400);
 
-  const prompt=`REDで活動する日本人${genre}ジャンルのアカウントを10件、架空・推定データでよいのでJSON配列のみで返してください。[{"name":"アカウント名","genre":"${genre}","followers":"数値","posts":"数値","likes":"数値","memo":"特徴50字","url":"","confidence":"low"}]`;
+  const allResults=[];
+  const totalBatches=3;
 
-  try{
-    const res=await fetch('/.netlify/functions/proxy',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:2000,
-        
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    const data=await res.json();
-    clearInterval(iv);
-    document.getElementById('prog-bar').style.width='100%';
-    const text=data.content?.map(c=>c.text||'').filter(Boolean).join('');
-    let parsed=[];
-    try{const m=text.replace(/```json|```/g,'').match(/\[[\s\S]*\]/);if(m)parsed=JSON.parse(m[0]);}catch(e){}
-    if(parsed.length===0){
-      document.getElementById('candidates').innerHTML=`<div class="card"><p style="font-size:13px;color:#888;">アカウントが見つかりませんでした。別のジャンルや条件で試してみてください。</p></div>`;
-    }else{
-      renderCandidates(parsed,genre);
-      document.getElementById('search-tip').textContent=`${parsed.length}件のアカウントが見つかりました。確認して「追加」を押してください。`;
+  for(let batch=0;batch<totalBatches;batch++){
+    const excludeNames=allResults.map(a=>a.name);
+    const excludeStr=excludeNames.length>0?'ただし以下のアカウントは除外してください：'+excludeNames.join('、')+'。':'';
+    const prompt=`REDで活動する日本人${genre}ジャンルのアカウントを10件、架空・推定データでよいのでJSON配列のみで返してください。${excludeStr}[{"name":"アカウント名","genre":"${genre}","followers":"数値","posts":"数値","likes":"数値","memo":"特徴50字","url":"","confidence":"low"}]`;
+    
+    try{
+      const res=await fetch('/.netlify/functions/proxy',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:2000,
+          messages:[{role:'user',content:prompt}]
+        })
+      });
+      const data=await res.json();
+      const t=data.content?.map(c=>c.text||'').filter(Boolean).join('');
+      let parsed=[];
+      try{const m=t.replace(/\`\`\`json|\`\`\`/g,'').match(/\[[\s\S]*\]/);if(m)parsed=JSON.parse(m[0]);}catch(e){}
+      
+      // Deduplicate
+      const existingNames=new Set(allResults.map(a=>a.name));
+      parsed.forEach(a=>{if(!existingNames.has(a.name)){allResults.push(a);existingNames.add(a.name);}});
+      
+      btn.textContent=`検索中...（${allResults.length}/30件）`;
+      document.getElementById('search-tip').textContent=`AIがWebを検索して日本人REDアカウントを探しています...（${batch+1}/3回目完了）`;
+      document.getElementById('prog-bar').style.width=`${Math.round((batch+1)/totalBatches*90)}%`;
+    }catch(e){
+      console.error('Batch '+batch+' error:',e);
     }
-  }catch(e){
-    clearInterval(iv);
-    document.getElementById('candidates').innerHTML=`<div class="card"><p style="color:#e53935;font-size:13px;">エラーが発生しました。APIキーを確認してもう一度お試しください。</p></div>`;
-    document.getElementById('search-tip').textContent='';
+  }
+
+  clearInterval(iv);
+  document.getElementById('prog-bar').style.width='100%';
+
+  if(allResults.length===0){
+    document.getElementById('candidates').innerHTML=`<div class="card"><p style="font-size:13px;color:#888;">アカウントが見つかりませんでした。別のジャンルや条件で試してみてください。</p></div>`;
+  }else{
+    renderCandidates(allResults,genre);
+    document.getElementById('search-tip').textContent=`${allResults.length}件のアカウントが見つかりました。確認して「追加」を押してください。`;
   }
   btn.disabled=false;btn.textContent='AIで競合を探す';
   setTimeout(()=>{document.getElementById('prog').style.display='none';document.getElementById('prog-bar').style.width='0%';},800);
