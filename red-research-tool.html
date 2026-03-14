@@ -59,9 +59,80 @@ tr:hover td{background:#fafafa;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;}
 .api-notice{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px;font-size:12px;color:#795548;margin-bottom:16px;line-height:1.7;}
+
+/* ===== Cute Decorations ===== */
+body{background:#fff5f7 !important;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,36,66,0.04) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(255,182,193,0.06) 0%, transparent 50%);
+}
+.app{position:relative;z-index:1;}
+.floating-deco{position:fixed;pointer-events:none;z-index:0;opacity:0.15;animation:floatY 6s ease-in-out infinite;}
+.floating-deco:nth-child(2){animation-delay:-2s;}
+.floating-deco:nth-child(3){animation-delay:-4s;}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+.header{position:relative;}
+.header-mascot{position:absolute;right:-10px;top:-10px;width:70px;height:70px;}
+.panda-footer{text-align:center;padding:20px 0 30px;opacity:0.7;font-size:12px;color:#888;}
+.panda-footer svg{vertical-align:middle;margin:0 4px;}
+.cherry-blossom{position:fixed;pointer-events:none;z-index:0;opacity:0.12;}
 </style>
 </head>
 <body>
+<svg class="floating-deco" style="left:5%;top:30%;width:80px;" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="35" r="25" fill="#FFE4C4"/>
+<ellipse cx="50" cy="28" rx="28" ry="12" fill="#1a1a1a"/>
+<circle cx="50" cy="22" r="18" fill="#1a1a1a"/>
+<circle cx="22" cy="30" r="8" fill="#1a1a1a"/>
+<circle cx="78" cy="30" r="8" fill="#1a1a1a"/>
+<circle cx="50" cy="18" r="4" fill="#FF2442"/>
+<circle cx="42" cy="36" r="2.5" fill="#1a1a1a"/>
+<circle cx="58" cy="36" r="2.5" fill="#1a1a1a"/>
+<ellipse cx="50" cy="42" rx="3" ry="1.5" fill="#FF8A9E"/>
+<ellipse cx="38" cy="40" rx="4" ry="2.5" fill="#FFB6C1" opacity="0.5"/>
+<ellipse cx="62" cy="40" rx="4" ry="2.5" fill="#FFB6C1" opacity="0.5"/>
+<path d="M35 55 Q50 50 65 55 L62 110 Q50 115 38 110 Z" fill="#FF2442"/>
+<path d="M38 60 Q50 56 62 60 L60 65 Q50 62 40 65 Z" fill="#FFD700"/>
+<circle cx="50" cy="70" r="3" fill="#FFD700"/>
+<rect x="35" y="105" rx="3" width="12" height="20" fill="#FFE4C4"/>
+<rect x="53" y="105" rx="3" width="12" height="20" fill="#FFE4C4"/>
+</svg><svg class="floating-deco" style="right:5%;top:50%;width:70px;" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="55" r="35" fill="white"/>
+<circle cx="50" cy="45" r="30" fill="white"/>
+<ellipse cx="30" cy="25" rx="14" ry="12" fill="#1a1a1a"/>
+<ellipse cx="70" cy="25" rx="14" ry="12" fill="#1a1a1a"/>
+<ellipse cx="38" cy="42" rx="11" ry="10" fill="#1a1a1a"/>
+<ellipse cx="62" cy="42" rx="11" ry="10" fill="#1a1a1a"/>
+<circle cx="38" cy="41" r="5" fill="white"/>
+<circle cx="62" cy="41" r="5" fill="white"/>
+<circle cx="39" cy="40" r="2.5" fill="#1a1a1a"/>
+<circle cx="63" cy="40" r="2.5" fill="#1a1a1a"/>
+<ellipse cx="50" cy="50" rx="5" ry="3.5" fill="#1a1a1a"/>
+<path d="M47 53 Q50 56 53 53" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+<ellipse cx="35" cy="52" rx="5" ry="3" fill="#FFB6C1" opacity="0.4"/>
+<ellipse cx="65" cy="52" rx="5" ry="3" fill="#FFB6C1" opacity="0.4"/>
+<ellipse cx="30" cy="75" rx="10" ry="8" fill="#1a1a1a"/>
+<ellipse cx="70" cy="75" rx="10" ry="8" fill="#1a1a1a"/>
+<rect x="38" y="82" rx="6" width="10" height="18" fill="#1a1a1a"/>
+<rect x="52" y="82" rx="6" width="10" height="18" fill="#1a1a1a"/>
+<circle cx="75" cy="60" r="3" fill="#90EE90"/>
+<line x1="75" y1="63" x2="75" y2="90" stroke="#90EE90" stroke-width="2.5"/>
+</svg><svg class="cherry-blossom" style="right:8%;top:15%;width:50px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="20" r="5" fill="#FFB7C5"/>
+<circle cx="25" cy="25" r="5" fill="#FFB7C5"/>
+<circle cx="35" cy="25" r="5" fill="#FFB7C5"/>
+<circle cx="27" cy="30" r="5" fill="#FFB7C5"/>
+<circle cx="33" cy="30" r="5" fill="#FFB7C5"/>
+<circle cx="30" cy="25" r="3" fill="#FF69B4"/>
+</svg><svg class="cherry-blossom" style="left:3%;top:60%;width:40px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="30" cy="20" r="5" fill="#FFB7C5"/>
+<circle cx="25" cy="25" r="5" fill="#FFB7C5"/>
+<circle cx="35" cy="25" r="5" fill="#FFB7C5"/>
+<circle cx="27" cy="30" r="5" fill="#FFB7C5"/>
+<circle cx="33" cy="30" r="5" fill="#FFB7C5"/>
+<circle cx="30" cy="25" r="3" fill="#FF69B4"/>
+</svg>
 <div class="app">
   <div class="header">
     <div class="logo">R</div>
@@ -147,6 +218,11 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<div class="panda-footer">
+<svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#1a1a1a"/><circle cx="7.5" cy="8.5" r="2" fill="white"/><circle cx="12.5" cy="8.5" r="2" fill="white"/><circle cx="8" cy="8.5" r="1" fill="#1a1a1a"/><circle cx="13" cy="8.5" r="1" fill="#1a1a1a"/><ellipse cx="10" cy="11.5" rx="1.5" ry="1" fill="#333"/></svg>
+Made with love in RED
+<svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#1a1a1a"/><circle cx="7.5" cy="8.5" r="2" fill="white"/><circle cx="12.5" cy="8.5" r="2" fill="white"/><circle cx="8" cy="8.5" r="1" fill="#1a1a1a"/><circle cx="13" cy="8.5" r="1" fill="#1a1a1a"/><ellipse cx="10" cy="11.5" rx="1.5" ry="1" fill="#333"/></svg>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
