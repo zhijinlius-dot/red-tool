@@ -279,7 +279,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
   <div class="section active" id="s-search">
     <div class="card">
       
-<div class="section-title">ジャンルを入力してAIに競合を探させる</div>
+<div class="section-title" style="display:none;">🌸 RED競合リサーチツール 🌸</div>
       <div class="form-row">
         <div class="form-group">
           <label class="lbl">ジャンル・テーマ *</label>
@@ -299,7 +299,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
         <label class="lbl">追加条件（任意）</label>
         <input id="sg-note" type="text" placeholder="例: 日本在住、中国語と日本語混合、最近伸びている" />
       </div>
-      <button class="btn btn-primary" id="btn-search" onclick="runSearch()">🌸 AIめこに探してもらう</button>
+      <div style="text-align:center;margin-top:20px;"><button class="btn btn-primary" id="btn-search" onclick="runSearch()">🌸 AIめこに探してもらう</button></div>
       <div class="progress" id="prog"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
       <p class="tip" id="search-tip"></p>
     </div>
