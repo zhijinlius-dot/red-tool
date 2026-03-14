@@ -68,19 +68,19 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
     radial-gradient(circle at 90% 80%, rgba(255,182,193,0.06) 0%, transparent 50%);
 }
 .app{position:relative;z-index:1;}
-.floating-deco{position:fixed;pointer-events:none;z-index:0;opacity:0.15;animation:floatY 6s ease-in-out infinite;}
+.floating-deco{position:fixed;pointer-events:none;z-index:0;opacity:0.35;animation:floatY 6s ease-in-out infinite;}
 .floating-deco:nth-child(2){animation-delay:-2s;}
 .floating-deco:nth-child(3){animation-delay:-4s;}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 .header{position:relative;}
 .header-mascot{position:absolute;right:-10px;top:-10px;width:70px;height:70px;}
-.panda-footer{text-align:center;padding:20px 0 30px;opacity:0.7;font-size:12px;color:#888;}
+.panda-footer{text-align:center;padding:30px 0 40px;opacity:0.8;font-size:13px;color:#999;letter-spacing:1px;}
 .panda-footer svg{vertical-align:middle;margin:0 4px;}
-.cherry-blossom{position:fixed;pointer-events:none;z-index:0;opacity:0.12;}
+.cherry-blossom{position:fixed;pointer-events:none;z-index:0;opacity:0.25;}
 </style>
 </head>
 <body>
-<svg class="floating-deco" style="left:5%;top:30%;width:80px;" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg class="floating-deco" style="left:2%;bottom:10%;top:auto;width:90px;" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="50" cy="35" r="25" fill="#FFE4C4"/>
 <ellipse cx="50" cy="28" rx="28" ry="12" fill="#1a1a1a"/>
 <circle cx="50" cy="22" r="18" fill="#1a1a1a"/>
@@ -97,7 +97,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 <circle cx="50" cy="70" r="3" fill="#FFD700"/>
 <rect x="35" y="105" rx="3" width="12" height="20" fill="#FFE4C4"/>
 <rect x="53" y="105" rx="3" width="12" height="20" fill="#FFE4C4"/>
-</svg><svg class="floating-deco" style="right:5%;top:50%;width:70px;" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg><svg class="floating-deco" style="right:2%;bottom:5%;top:auto;width:85px;" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="50" cy="55" r="35" fill="white"/>
 <circle cx="50" cy="45" r="30" fill="white"/>
 <ellipse cx="30" cy="25" rx="14" ry="12" fill="#1a1a1a"/>
@@ -118,14 +118,14 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 <rect x="52" y="82" rx="6" width="10" height="18" fill="#1a1a1a"/>
 <circle cx="75" cy="60" r="3" fill="#90EE90"/>
 <line x1="75" y1="63" x2="75" y2="90" stroke="#90EE90" stroke-width="2.5"/>
-</svg><svg class="cherry-blossom" style="right:8%;top:15%;width:50px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg><svg class="cherry-blossom" style="right:10%;top:12%;width:45px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="30" cy="20" r="5" fill="#FFB7C5"/>
 <circle cx="25" cy="25" r="5" fill="#FFB7C5"/>
 <circle cx="35" cy="25" r="5" fill="#FFB7C5"/>
 <circle cx="27" cy="30" r="5" fill="#FFB7C5"/>
 <circle cx="33" cy="30" r="5" fill="#FFB7C5"/>
 <circle cx="30" cy="25" r="3" fill="#FF69B4"/>
-</svg><svg class="cherry-blossom" style="left:3%;top:60%;width:40px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+</svg><svg class="cherry-blossom" style="left:8%;top:15%;width:40px;" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <circle cx="30" cy="20" r="5" fill="#FFB7C5"/>
 <circle cx="25" cy="25" r="5" fill="#FFB7C5"/>
 <circle cx="35" cy="25" r="5" fill="#FFB7C5"/>
