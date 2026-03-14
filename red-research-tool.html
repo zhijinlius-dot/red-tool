@@ -227,28 +227,7 @@ async function runSearch(){
   let prog=0;
   const iv=setInterval(()=>{prog=Math.min(prog+6,85);document.getElementById('prog-bar').style.width=prog+'%';},400);
 
-  const prompt=`あなたはREDの日本人インフルエンサーリサーチの専門家です。
-
-以下の条件で、実際に活動している日本人のREDアカウントを10件探してリストアップしてください。
-
-ジャンル: ${genre}
-フォロワー規模: ${size||'指定なし'}
-追加条件: ${note||'なし'}
-
-必ず以下のJSON形式のみで回答してください。前置き・説明・マークダウン記号は一切不要です。
-
-[
-  {
-    "name": "アカウント名（@なし）",
-    "genre": "ジャンル",
-    "followers": "推定フォロワー数（数値のみ）",
-    "posts": "推定投稿数（数値のみ）",
-    "likes": "推定いいね総数（数値のみ）",
-    "memo": "特徴・投稿スタイルの説明（50文字以内）",
-    "url": "REDプロフィールURL（不明な場合は空文字）",
-    "confidence": "high/medium/low"
-  }
-]`;
+  const prompt=`REDで活動する日本人アカウントを3件、JSON配列のみで返してください。[{"name":"アカウント名","genre":"","followers":"数値","posts":"数値","likes":"数値","memo":"特徴50字","url":"","confidence":"low"}]`;
 
   try{
     const res=await fetch('/.netlify/functions/proxy',{
