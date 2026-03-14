@@ -55,10 +55,8 @@ th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:#888;b
 td{padding:11px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
-.overflow-wrap{overflow-x:auto;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;}
-.api-notice{background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:12px;font-size:12px;color:#795548;margin-bottom:16px;line-height:1.7;}
 </style>
 </head>
 <body>
@@ -70,14 +68,10 @@ tr:hover td{background:#fafafa;}
       <div class="header-sub">日本人アカウント自動発見 · 小紅書 競合分析</div>
     </div>
   </div>
-
   <div class="tabs">
     <button class="tab active" onclick="go('search')">🔍 アカウント検索</button>
     <button class="tab" onclick="go('list')">📋 一覧 (<span id="list-cnt">0</span>)</button>
-    <button class="tab" onclick="go('settings')">⚙️ 設定</button>
   </div>
-
-  <!-- 検索 -->
   <div class="section active" id="s-search">
     <div class="card">
       <div class="section-title">ジャンルを入力してAIに競合を探させる</div>
@@ -106,8 +100,6 @@ tr:hover td{background:#fafafa;}
     </div>
     <div id="candidates"></div>
   </div>
-
-  <!-- 一覧 -->
   <div class="section" id="s-list">
     <div class="search-bar">
       <input type="text" id="q" placeholder="アカウント名・メモで検索..." oninput="renderTable()" />
@@ -127,96 +119,19 @@ tr:hover td{background:#fafafa;}
       <div class="empty" id="empty-msg">まだ登録がありません。「アカウント検索」タブから追加してください。</div>
     </div>
   </div>
-
-  <!-- 設定 -->
-  <div class="section" id="s-settings">
-    <div class="card">
-      <div class="section-title">Anthropic APIキー設定</div>
-      <div class="api-notice">
-        AIで競合を自動検索するにはAnthropicのAPIキーが必要です。<br>
-        取得先: <a href="https://console.anthropic.com" target="_blank" class="link">console.anthropic.com</a> → API Keys<br>
-        ※ キーはこのブラウザのみに保存されます。外部に送信されません。
-      </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label class="lbl">APIキー</label>
-        <input type="password" id="api-key-input" placeholder="sk-ant-..." />
-      </div>
-      <button class="btn btn-primary" onclick="saveApiKey()">保存する</button>
-      <p class="tip" id="key-saved-msg"></p>
-    </div>
-  </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
-const GENRE_COLORS={
-  'ライフスタイル':['#E1F5EE','#0F6E56'],
-  '美容':['#FBEAF0','#993556'],
-  'グルメ':['#FAEEDA','#854F0B'],
-  'ファッション':['#EEEDFE','#534AB7'],
-  '旅行':['#E6F1FB','#185FA5'],
-  'フィットネス':['#EAF3DE','#3B6D11'],
-  'その他':['#F1EFE8','#5F5E5A'],
-};
-
-let accounts = JSON.parse(localStorage.getItem('red_accounts')||'[]');
+const GENRE_COLORS={'ライフスタイル':['#E1F5EE','#0F6E56'],'美容':['#FBEAF0','#993556'],'グルメ':['#FAEEDA','#854F0B'],'ファッション':['#EEEDFE','#534AB7'],'旅行':['#E6F1FB','#185FA5'],'フィットネス':['#EAF3DE','#3B6D11'],'その他':['#F1EFE8','#5F5E5A']};
+let accounts=JSON.parse(localStorage.getItem('red_accounts')||'[]');
 let activeGenre='all';
-
-function saveAccounts(){
-  localStorage.setItem('red_accounts',JSON.stringify(accounts));
-  document.getElementById('list-cnt').textContent=accounts.length;
-}
-
-function go(tab){
-  ['search','list','settings'].forEach((t,i)=>{
-    document.getElementById('s-'+t).classList.toggle('active',t===tab);
-    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
-  });
-  if(tab==='list'){renderChips();renderTable();}
-  if(tab==='settings'){
-    const k=localStorage.getItem('anthropic_key')||'';
-    document.getElementById('api-key-input').value=k?'設定済み（変更する場合は上書き入力）':'';
-  }
-}
-
-function saveApiKey(){
-  const val=document.getElementById('api-key-input').value.trim();
-  if(!val||val==='設定済み（変更する場合は上書き入力）'){
-    document.getElementById('key-saved-msg').textContent='キーを入力してください';return;
-  }
-  localStorage.setItem('anthropic_key',val);
-  document.getElementById('key-saved-msg').textContent='✓ 保存しました';
-  showToast('APIキーを保存しました');
-}
-
-function getApiKey(){return localStorage.getItem('anthropic_key')||'';}
-
-function fmtN(n){
-  if(!n&&n!==0)return'—';
-  const v=parseFloat(String(n).replace(/[^0-9.]/g,''))||0;
-  if(String(n).includes('万'))return String(n);
-  if(v>=10000)return(v/10000).toFixed(1)+'万';
-  if(v>0)return v.toLocaleString();
-  return n||'—';
-}
-
-function calcEng(followers,likes,posts){
-  const f=parseFloat(String(followers).replace(/[^0-9.]/g,''))||0;
-  const l=parseFloat(String(likes).replace(/[^0-9.]/g,''))||0;
-  const p=parseFloat(String(posts).replace(/[^0-9.]/g,''))||0;
-  if(f>0&&l>0&&p>0)return((l/p)/f*100).toFixed(1)+'%';
-  return'—';
-}
-
+function saveAccounts(){localStorage.setItem('red_accounts',JSON.stringify(accounts));document.getElementById('list-cnt').textContent=accounts.length;}
+function go(tab){['search','list'].forEach((t,i)=>{document.getElementById('s-'+t).classList.toggle('active',t===tab);document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);});if(tab==='list'){renderChips();renderTable();}}
+function fmtN(n){if(!n&&n!==0)return'—';const v=parseFloat(String(n).replace(/[^0-9.]/g,''))||0;if(String(n).includes('万'))return String(n);if(v>=10000)return(v/10000).toFixed(1)+'万';if(v>0)return v.toLocaleString();return n||'—';}
+function calcEng(f,l,p){const fv=parseFloat(String(f).replace(/[^0-9.]/g,''))||0,lv=parseFloat(String(l).replace(/[^0-9.]/g,''))||0,pv=parseFloat(String(p).replace(/[^0-9.]/g,''))||0;if(fv>0&&lv>0&&pv>0)return((lv/pv)/fv*100).toFixed(1)+'%';return'—';}
 async function runSearch(){
   const genre=document.getElementById('sg-genre').value.trim();
   if(!genre){alert('ジャンルを入力してください');return;}
-  const apiKey=getApiKey();
-  if(!apiKey){
-    alert('APIキーが設定されていません。「設定」タブからAPIキーを入力してください。');
-    go('settings');return;
-  }
   const size=document.getElementById('sg-size').value;
   const note=document.getElementById('sg-note').value.trim();
   const btn=document.getElementById('btn-search');
@@ -226,198 +141,52 @@ async function runSearch(){
   document.getElementById('candidates').innerHTML='';
   let prog=0;
   const iv=setInterval(()=>{prog=Math.min(prog+6,85);document.getElementById('prog-bar').style.width=prog+'%';},400);
-
-  const prompt=`あなたはREDの日本人インフルエンサーリサーチの専門家です。
-
-以下の条件で、実際に活動している日本人のREDアカウントを10件探してリストアップしてください。
-
-ジャンル: ${genre}
-フォロワー規模: ${size||'指定なし'}
-追加条件: ${note||'なし'}
-
-必ず以下のJSON形式のみで回答してください。前置き・説明・マークダウン記号は一切不要です。
-
-[
-  {
-    "name": "アカウント名（@なし）",
-    "genre": "ジャンル",
-    "followers": "推定フォロワー数（数値のみ）",
-    "posts": "推定投稿数（数値のみ）",
-    "likes": "推定いいね総数（数値のみ）",
-    "memo": "特徴・投稿スタイルの説明（50文字以内）",
-    "url": "REDプロフィールURL（不明な場合は空文字）",
-    "confidence": "high/medium/low"
-  }
-]`;
-
+  const prompt=`あなたはREDの日本人インフルエンサーリサーチの専門家です。以下の条件で実際に活動している日本人のREDアカウントを10件探してリストアップしてください。ジャンル: ${genre} フォロワー規模: ${size||'指定なし'} 追加条件: ${note||'なし'} 必ず以下のJSON形式のみで回答してください。前置き・説明・マークダウン記号は一切不要です。[{"name":"アカウント名(@なし)","genre":"ジャンル","followers":"推定フォロワー数(数値のみ)","posts":"推定投稿数(数値のみ)","likes":"推定いいね総数(数値のみ)","memo":"特徴説明50文字以内","url":"REDプロフィールURL不明なら空","confidence":"high/medium/low"}]`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:2000,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:prompt}]
-      })
-    });
+    const res=await fetch('https://script.google.com/macros/s/AKfycbw7s2ielAS5YNVThj3DnJOKsocEdy6D3IlrVY2xrajF4GNNzTtmKsAzfwtOQguyL8c_/exec',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
-    clearInterval(iv);
-    document.getElementById('prog-bar').style.width='100%';
+    clearInterval(iv);document.getElementById('prog-bar').style.width='100%';
     const text=data.content?.map(c=>c.text||'').filter(Boolean).join('');
     let parsed=[];
     try{const m=text.replace(/```json|```/g,'').match(/\[[\s\S]*\]/);if(m)parsed=JSON.parse(m[0]);}catch(e){}
-    if(parsed.length===0){
-      document.getElementById('candidates').innerHTML=`<div class="card"><p style="font-size:13px;color:#888;">アカウントが見つかりませんでした。別のジャンルや条件で試してみてください。</p></div>`;
-    }else{
-      renderCandidates(parsed,genre);
-      document.getElementById('search-tip').textContent=`${parsed.length}件のアカウントが見つかりました。確認して「追加」を押してください。`;
-    }
-  }catch(e){
-    clearInterval(iv);
-    document.getElementById('candidates').innerHTML=`<div class="card"><p style="color:#e53935;font-size:13px;">エラーが発生しました。APIキーを確認してもう一度お試しください。</p></div>`;
-    document.getElementById('search-tip').textContent='';
-  }
+    if(parsed.length===0){document.getElementById('candidates').innerHTML='<div class="card"><p style="font-size:13px;color:#888;">アカウントが見つかりませんでした。別のジャンルや条件で試してみてください。</p></div>';}
+    else{renderCandidates(parsed,genre);document.getElementById('search-tip').textContent=parsed.length+'件のアカウントが見つかりました。確認して「追加」を押してください。';}
+  }catch(e){clearInterval(iv);document.getElementById('candidates').innerHTML='<div class="card"><p style="color:#e53935;font-size:13px;">エラーが発生しました。もう一度お試しください。</p></div>';document.getElementById('search-tip').textContent='';}
   btn.disabled=false;btn.textContent='AIで競合を探す';
   setTimeout(()=>{document.getElementById('prog').style.display='none';document.getElementById('prog-bar').style.width='0%';},800);
 }
-
 function renderCandidates(list,genre){
   const confLabel={'high':'確度高','medium':'確度中','low':'確度低'};
   const confColor={'high':['#EAF3DE','#3B6D11'],'medium':['#FAEEDA','#854F0B'],'low':['#F1EFE8','#5F5E5A']};
   document.getElementById('candidates').innerHTML=list.map((a,i)=>{
     const [cbg,cfg]=confColor[a.confidence]||confColor['low'];
     const eng=calcEng(a.followers,a.likes,a.posts);
-    return`<div class="candidate-card" id="cand-${i}">
-      <div class="candidate-name">@${a.name||'不明'}</div>
-      <div class="candidate-meta">
-        ${a.followers?'👥 推定'+fmtN(a.followers)+'　':''}
-        ${a.posts?'📝 '+a.posts+'投稿　':''}
-        ${eng!=='—'?'💗 ENG '+eng+'　':''}
-        <span class="badge" style="background:${cbg};color:${cfg};">${confLabel[a.confidence]||'確度低'}</span>
-      </div>
-      <div style="font-size:12px;color:#888;">${a.memo||''}</div>
-      <div style="display:flex;gap:8px;align-items:center;margin-top:10px;">
-        <button class="btn btn-primary btn-sm" onclick="openForm(${i})">＋ 一覧に追加</button>
-        ${a.url?`<a class="link" href="${a.url}" target="_blank">REDで確認 →</a>`:''}
-        <button class="btn btn-outline btn-sm" onclick="document.getElementById('cand-${i}').remove()">スキップ</button>
-      </div>
-      <div class="add-form" id="form-${i}">
-        <div class="form-row" style="margin-bottom:8px;">
-          <div class="form-group"><label class="lbl">アカウント名</label><input id="fn-${i}" value="${a.name||''}"/></div>
-          <div class="form-group"><label class="lbl">ジャンル</label>
-            <select id="fg-${i}">${['ライフスタイル','美容','グルメ','ファッション','旅行','フィットネス','その他'].map(g=>`<option${g===a.genre||g===genre?' selected':''}>${g}</option>`).join('')}</select>
-          </div>
-        </div>
-        <div class="form-row" style="margin-bottom:8px;">
-          <div class="form-group"><label class="lbl">フォロワー数</label><input id="ff-${i}" value="${a.followers||''}" placeholder="例: 50000"/></div>
-          <div class="form-group"><label class="lbl">投稿数</label><input id="fp-${i}" value="${a.posts||''}" placeholder="例: 80"/></div>
-        </div>
-        <div class="form-row" style="margin-bottom:8px;">
-          <div class="form-group"><label class="lbl">いいね総数</label><input id="fl-${i}" value="${a.likes||''}" placeholder="例: 120000"/></div>
-          <div class="form-group"><label class="lbl">REDプロフィールURL</label><input id="fu-${i}" value="${a.url||''}" placeholder="https://..."/></div>
-        </div>
-        <div class="form-group" style="margin-bottom:10px;"><label class="lbl">特徴メモ</label><input id="fm-${i}" value="${a.memo||''}"/></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-primary btn-sm" onclick="saveCandidate(${i})">保存する</button>
-          <button class="btn btn-outline btn-sm" onclick="closeForm(${i})">キャンセル</button>
-        </div>
-      </div>
-    </div>`;
+    return`<div class="candidate-card" id="cand-${i}"><div class="candidate-name">@${a.name||'不明'}</div><div class="candidate-meta">${a.followers?'👥 推定'+fmtN(a.followers)+'　':''}${a.posts?'📝 '+a.posts+'投稿　':''}${eng!=='—'?'💗 ENG '+eng+'　':''}<span class="badge" style="background:${cbg};color:${cfg};">${confLabel[a.confidence]||'確度低'}</span></div><div style="font-size:12px;color:#888;">${a.memo||''}</div><div style="display:flex;gap:8px;align-items:center;margin-top:10px;"><button class="btn btn-primary btn-sm" onclick="openForm(${i})">＋ 一覧に追加</button>${a.url?`<a class="link" href="${a.url}" target="_blank">REDで確認 →</a>`:''}<button class="btn btn-outline btn-sm" onclick="document.getElementById('cand-${i}').remove()">スキップ</button></div><div class="add-form" id="form-${i}"><div class="form-row" style="margin-bottom:8px;"><div class="form-group"><label class="lbl">アカウント名</label><input id="fn-${i}" value="${a.name||''}"/></div><div class="form-group"><label class="lbl">ジャンル</label><select id="fg-${i}">${['ライフスタイル','美容','グルメ','ファッション','旅行','フィットネス','その他'].map(g=>`<option${g===a.genre||g===genre?' selected':''}>${g}</option>`).join('')}</select></div></div><div class="form-row" style="margin-bottom:8px;"><div class="form-group"><label class="lbl">フォロワー数</label><input id="ff-${i}" value="${a.followers||''}" placeholder="例: 50000"/></div><div class="form-group"><label class="lbl">投稿数</label><input id="fp-${i}" value="${a.posts||''}" placeholder="例: 80"/></div></div><div class="form-row" style="margin-bottom:8px;"><div class="form-group"><label class="lbl">いいね総数</label><input id="fl-${i}" value="${a.likes||''}" placeholder="例: 120000"/></div><div class="form-group"><label class="lbl">URL</label><input id="fu-${i}" value="${a.url||''}" placeholder="https://..."/></div></div><div class="form-group" style="margin-bottom:10px;"><label class="lbl">特徴メモ</label><input id="fm-${i}" value="${a.memo||''}"/></div><div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="saveCandidate(${i})">保存する</button><button class="btn btn-outline btn-sm" onclick="closeForm(${i})">キャンセル</button></div></div></div>`;
   }).join('');
 }
-
 function openForm(i){document.getElementById('form-'+i).classList.add('open');}
 function closeForm(i){document.getElementById('form-'+i).classList.remove('open');}
-
 function saveCandidate(i){
-  const followers=document.getElementById('ff-'+i).value.trim();
-  const posts=document.getElementById('fp-'+i).value.trim();
-  const likes=document.getElementById('fl-'+i).value.trim();
-  const acc={
-    id:Date.now()+i,
-    name:document.getElementById('fn-'+i).value.trim(),
-    genre:document.getElementById('fg-'+i).value,
-    followers,posts,likes,
-    eng:calcEng(followers,likes,posts),
-    url:document.getElementById('fu-'+i).value.trim(),
-    memo:document.getElementById('fm-'+i).value.trim(),
-    savedAt:new Date().toLocaleDateString('ja-JP'),
-  };
+  const followers=document.getElementById('ff-'+i).value.trim(),posts=document.getElementById('fp-'+i).value.trim(),likes=document.getElementById('fl-'+i).value.trim();
+  const acc={id:Date.now()+i,name:document.getElementById('fn-'+i).value.trim(),genre:document.getElementById('fg-'+i).value,followers,posts,likes,eng:calcEng(followers,likes,posts),url:document.getElementById('fu-'+i).value.trim(),memo:document.getElementById('fm-'+i).value.trim(),savedAt:new Date().toLocaleDateString('ja-JP')};
   if(!acc.name){alert('アカウント名を入力してください');return;}
-  accounts.unshift(acc);
-  saveAccounts();
+  accounts.unshift(acc);saveAccounts();
   document.getElementById('cand-'+i).innerHTML=`<div style="font-size:13px;color:#2e7d32;padding:10px;background:#f1f8e9;border-radius:8px;">✓ @${acc.name} を一覧に追加しました</div>`;
   showToast('@'+acc.name+' を追加しました');
 }
-
-function renderChips(){
-  const genres=['all',...new Set(accounts.map(a=>a.genre).filter(Boolean))];
-  document.getElementById('genre-chips').innerHTML=genres.map(g=>
-    `<button class="chip${g===activeGenre?' active':''}" onclick="setGenre('${g}',this)">${g==='all'?'すべて':g}</button>`
-  ).join('');
-}
-
-function setGenre(g,btn){
-  activeGenre=g;
-  document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderTable();
-}
-
+function renderChips(){const genres=['all',...new Set(accounts.map(a=>a.genre).filter(Boolean))];document.getElementById('genre-chips').innerHTML=genres.map(g=>`<button class="chip${g===activeGenre?' active':''}" onclick="setGenre('${g}',this)">${g==='all'?'すべて':g}</button>`).join('');}
+function setGenre(g,btn){activeGenre=g;document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderTable();}
 function renderTable(){
   const q=(document.getElementById('q')?.value||'').toLowerCase();
-  const filtered=accounts.filter(a=>{
-    const mq=!q||a.name.toLowerCase().includes(q)||(a.memo||'').toLowerCase().includes(q);
-    const mg=activeGenre==='all'||a.genre===activeGenre;
-    return mq&&mg;
-  });
-  const tbody=document.getElementById('tbl');
-  const empty=document.getElementById('empty-msg');
+  const filtered=accounts.filter(a=>(!q||a.name.toLowerCase().includes(q)||(a.memo||'').toLowerCase().includes(q))&&(activeGenre==='all'||a.genre===activeGenre));
+  const tbody=document.getElementById('tbl'),empty=document.getElementById('empty-msg');
   if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=filtered.map((a,i)=>{
-    const [bg,fg]=GENRE_COLORS[a.genre]||['#F1EFE8','#5F5E5A'];
-    return`<tr>
-      <td style="color:#aaa;width:28px;">${i+1}</td>
-      <td style="font-weight:600;white-space:nowrap;">@${a.name}</td>
-      <td><span class="badge" style="background:${bg};color:${fg};">${a.genre}</span></td>
-      <td style="white-space:nowrap;">${fmtN(a.followers)}</td>
-      <td>${a.posts||'—'}</td>
-      <td style="white-space:nowrap;">${fmtN(a.likes)}</td>
-      <td style="white-space:nowrap;font-weight:600;color:${a.eng&&a.eng!=='—'?'#FF2442':'#aaa'};">${a.eng||'—'}</td>
-      <td style="max-width:180px;color:#666;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.memo||'—'}</td>
-      <td>${a.url?`<a class="link" href="${a.url}" target="_blank">開く →</a>`:'—'}</td>
-      <td><button style="font-size:12px;color:#ccc;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#FF2442'" onmouseout="this.style.color='#ccc'" onclick="del(${a.id})">✕</button></td>
-    </tr>`;
-  }).join('');
+  tbody.innerHTML=filtered.map((a,i)=>{const[bg,fg]=GENRE_COLORS[a.genre]||['#F1EFE8','#5F5E5A'];return`<tr><td style="color:#aaa;">${i+1}</td><td style="font-weight:600;white-space:nowrap;">@${a.name}</td><td><span class="badge" style="background:${bg};color:${fg};">${a.genre}</span></td><td>${fmtN(a.followers)}</td><td>${a.posts||'—'}</td><td>${fmtN(a.likes)}</td><td style="font-weight:600;color:${a.eng&&a.eng!=='—'?'#FF2442':'#aaa'};">${a.eng||'—'}</td><td style="max-width:180px;color:#666;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.memo||'—'}</td><td>${a.url?`<a class="link" href="${a.url}" target="_blank">開く →</a>`:'—'}</td><td><button style="color:#ccc;background:none;border:none;cursor:pointer;" onclick="del(${a.id})">✕</button></td></tr>`;}).join('');
 }
-
-function del(id){
-  if(!confirm('削除しますか？'))return;
-  accounts=accounts.filter(a=>a.id!==id);
-  saveAccounts();renderChips();renderTable();
-}
-
-function exportCSV(){
-  if(accounts.length===0){alert('データがありません');return;}
-  const header='アカウント名,ジャンル,フォロワー数,投稿数,いいね総数,ENG率,特徴メモ,URL,登録日';
-  const rows=accounts.map(a=>[a.name,a.genre,a.followers,a.posts,a.likes,a.eng,a.memo,a.url,a.savedAt].map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(','));
-  const csv='\uFEFF'+header+'\n'+rows.join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='RED競合アカウント一覧.csv';a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSVを出力しました');
-}
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
-
+function del(id){if(!confirm('削除しますか？'))return;accounts=accounts.filter(a=>a.id!==id);saveAccounts();renderChips();renderTable();}
+function exportCSV(){if(accounts.length===0){alert('データがありません');return;}const header='アカウント名,ジャンル,フォロワー数,投稿数,いいね総数,ENG率,特徴メモ,URL,登録日';const rows=accounts.map(a=>[a.name,a.genre,a.followers,a.posts,a.likes,a.eng,a.memo,a.url,a.savedAt].map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(','));const csv='\uFEFF'+header+'\n'+rows.join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='RED競合アカウント一覧.csv';a.click();URL.revokeObjectURL(url);showToast('CSVを出力しました');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 document.getElementById('list-cnt').textContent=accounts.length;
 </script>
 </body>
