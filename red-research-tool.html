@@ -73,13 +73,14 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 .floating-deco:nth-child(3){animation-delay:-4s;}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
 .header{position:relative;}
-.header-mascot{position:absolute;right:-10px;top:-10px;width:70px;height:70px;}
+.china-girl-fixed{position:fixed;left:15px;bottom:15px;z-index:5;pointer-events:none;filter:drop-shadow(0 4px 15px rgba(255,107,138,0.3));}
+.china-girl-fixed img{width:120px;height:120px;border-radius:50%;border:3px solid rgba(255,183,197,0.6);background:rgba(255,255,255,0.8);}
 .panda-footer{text-align:center;padding:30px 0 40px;opacity:0.8;font-size:13px;color:#999;letter-spacing:1px;}
 .panda-footer svg{vertical-align:middle;margin:0 4px;}
 .cherry-blossom{position:fixed;pointer-events:none;z-index:0;opacity:0.25;}
 
 .sakura{position:fixed;pointer-events:none;z-index:0;}
-@keyframes sakuraFall{0%{transform:translateY(-20px) rotate(0deg);opacity:0;}10%{opacity:1;}90%{opacity:0.8;}100%{transform:translateY(100vh) rotate(360deg);opacity:0;}}
+@keyframes sakuraFall{0%{transform:translateY(-20px) rotate(0deg) translateX(0);opacity:0;}10%{opacity:0.8;}25%{transform:translateY(25vh) rotate(90deg) translateX(15px);}50%{transform:translateY(50vh) rotate(180deg) translateX(-10px);}75%{transform:translateY(75vh) rotate(270deg) translateX(20px);}100%{transform:translateY(100vh) rotate(360deg) translateX(5px);opacity:0;}}
 @keyframes sakuraSway{0%,100%{transform:translateX(0)}50%{transform:translateX(30px)}}
 .sakura-petal{position:fixed;pointer-events:none;z-index:0;animation:sakuraFall linear infinite;}
 </style>
@@ -87,121 +88,100 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
 <body>
 <div class="floating-deco" style="right:2%;bottom:5%;">
 <svg width="100" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="60" cy="100" rx="38" ry="35" fill="white" stroke="#ccc" stroke-width="1"/>
-<circle cx="60" cy="55" r="35" fill="white" stroke="#ccc" stroke-width="1"/>
-<circle cx="30" cy="28" r="14" fill="#111"/>
-<circle cx="90" cy="28" r="14" fill="#111"/>
-<circle cx="30" cy="28" r="6" fill="#FF6B8A"/>
-<circle cx="90" cy="28" r="6" fill="#FF6B8A"/>
-<ellipse cx="44" cy="52" rx="13" ry="12" fill="#111" transform="rotate(-10 44 52)"/>
-<ellipse cx="76" cy="52" rx="13" ry="12" fill="#111" transform="rotate(10 76 52)"/>
-<ellipse cx="44" cy="52" rx="8" ry="9" fill="white"/>
-<ellipse cx="76" cy="52" rx="8" ry="9" fill="white"/>
-<ellipse cx="46" cy="53" rx="5.5" ry="6.5" fill="#2C1810"/>
-<ellipse cx="78" cy="53" rx="5.5" ry="6.5" fill="#2C1810"/>
-<circle cx="48" cy="50" r="3" fill="white"/>
-<circle cx="80" cy="50" r="3" fill="white"/>
-<circle cx="44" cy="54" r="1.5" fill="white"/>
-<circle cx="76" cy="54" r="1.5" fill="white"/>
-<ellipse cx="60" cy="63" rx="5" ry="3.5" fill="#111"/>
-<ellipse cx="60" cy="62" rx="2" ry="1" fill="white" opacity="0.5"/>
-<ellipse cx="34" cy="64" rx="7" ry="4" fill="#FF6B8A" opacity="0.6"/>
-<ellipse cx="86" cy="64" rx="7" ry="4" fill="#FF6B8A" opacity="0.6"/>
-<ellipse cx="28" cy="95" rx="13" ry="18" fill="#111"/>
-<ellipse cx="92" cy="95" rx="13" ry="18" fill="#111"/>
-<ellipse cx="42" cy="130" rx="14" ry="10" fill="#111"/>
-<ellipse cx="78" cy="130" rx="14" ry="10" fill="#111"/>
-<ellipse cx="42" cy="128" rx="5" ry="3" fill="#FF6B8A" opacity="0.5"/>
-<ellipse cx="78" cy="128" rx="5" ry="3" fill="#FF6B8A" opacity="0.5"/>
-<rect x="96" y="65" rx="3.5" width="7" height="75" fill="#4CAF50"/>
-<ellipse cx="104" cy="62" rx="14" ry="7" fill="#66BB6A" transform="rotate(-30 104 62)"/>
-<ellipse cx="106" cy="78" rx="12" ry="6" fill="#81C784" transform="rotate(20 106 78)"/>
-<path d="M55 85 Q55 78 60 78 Q65 78 65 85 Q65 92 60 96 Q55 92 55 85Z" fill="#FF4081" opacity="0.8"/>
-</svg></div>
+<!-- body -->
+<ellipse cx="60" cy="95" rx="38" ry="45" fill="white"/>
+<ellipse cx="60" cy="95" rx="32" ry="38" fill="#fafafa"/>
+<!-- head -->
+<circle cx="60" cy="48" r="35" fill="white"/>
+<!-- ears -->
+<circle cx="30" cy="22" r="14" fill="#333"/>
+<circle cx="90" cy="22" r="14" fill="#333"/>
+<circle cx="30" cy="22" r="8" fill="#FF8FAB"/>
+<circle cx="90" cy="22" r="8" fill="#FF8FAB"/>
+<!-- eye patches -->
+<ellipse cx="44" cy="48" rx="12" ry="11" fill="#333" transform="rotate(-5 44 48)"/>
+<ellipse cx="76" cy="48" rx="12" ry="11" fill="#333" transform="rotate(5 76 48)"/>
+<!-- eyes (big sparkly anime eyes) -->
+<ellipse cx="44" cy="47" rx="7" ry="7.5" fill="white"/>
+<ellipse cx="76" cy="47" rx="7" ry="7.5" fill="white"/>
+<circle cx="44" cy="46" r="4.5" fill="#2C1810"/>
+<circle cx="76" cy="46" r="4.5" fill="#2C1810"/>
+<circle cx="42" cy="44" r="2" fill="white"/>
+<circle cx="74" cy="44" r="2" fill="white"/>
+<circle cx="46" cy="48" r="1" fill="white"/>
+<circle cx="78" cy="48" r="1" fill="white"/>
+<!-- nose -->
+<ellipse cx="60" cy="56" rx="3.5" ry="2.5" fill="#333"/>
+<!-- blush -->
+<ellipse cx="36" cy="58" rx="6" ry="3.5" fill="#FFB7C5" opacity="0.6"/>
+<ellipse cx="84" cy="58" rx="6" ry="3.5" fill="#FFB7C5" opacity="0.6"/>
+<!-- arms -->
+<ellipse cx="28" cy="90" rx="12" ry="16" fill="#333"/>
+<ellipse cx="92" cy="90" rx="12" ry="16" fill="#333"/>
+<!-- feet -->
+<ellipse cx="42" cy="130" rx="12" ry="8" fill="#333"/>
+<ellipse cx="78" cy="130" rx="12" ry="8" fill="#333"/>
+<ellipse cx="42" cy="130" rx="6" ry="4" fill="#FFB7C5" opacity="0.5"/>
+<ellipse cx="78" cy="130" rx="6" ry="4" fill="#FFB7C5" opacity="0.5"/>
+<!-- bamboo -->
+<rect x="100" y="55" rx="3" width="6" height="80" fill="#7EC88B"/>
+<ellipse cx="110" cy="60" rx="12" ry="5" fill="#8ED89E" transform="rotate(-30 110 60)"/>
+<ellipse cx="112" cy="75" rx="10" ry="4.5" fill="#7EC88B" transform="rotate(20 112 75)"/>
+</svg>
+</div>
 
-<!-- Big sakura flowers -->
-<div class="sakura" style="right:6%;top:8%;"><svg width="75" viewBox="0 0 100 100" fill="none">
-<g opacity="0.9">
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(0 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(72 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(144 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(216 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/>
-<circle cx="50" cy="50" r="8" fill="#FF69B4"/>
-<circle cx="50" cy="50" r="4" fill="#FFD700"/>
-<circle cx="47" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="53" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="50" cy="53" r="1.5" fill="#FF1493" opacity="0.6"/>
+<!-- Sakura flowers -->
+<div class="sakura" style="right:5%;top:6%;"><svg width="70" viewBox="0 0 100 100" fill="none">
+<g opacity="0.85"><circle cx="50" cy="50" r="4" fill="#E8567F"/>
+<g><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC"/><path d="M50 15 C52 28 55 33 50 42 C45 33 48 28 50 15Z" fill="#FFBDCE" opacity="0.6"/>
+<path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="url(#sg1)" transform="rotate(72 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(144 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFBDCE" transform="rotate(216 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(288 50 50)"/>
+</g></g><defs><radialGradient id="sg1"><stop offset="0%" stop-color="#FFE0E8"/><stop offset="100%" stop-color="#FFB7C5"/></radialGradient></defs></svg></div>
+
+<div class="sakura" style="left:4%;top:7%;"><svg width="55" viewBox="0 0 100 100" fill="none">
+<g opacity="0.7"><circle cx="50" cy="50" r="3.5" fill="#E8567F"/>
+<path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(15 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFCAD6" transform="rotate(87 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(159 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFCAD6" transform="rotate(231 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(303 50 50)"/>
 </g></svg></div>
-<div class="sakura" style="left:5%;top:6%;"><svg width="60" viewBox="0 0 100 100" fill="none">
-<g opacity="0.8">
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(0 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(72 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(144 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(216 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/>
-<circle cx="50" cy="50" r="8" fill="#FF69B4"/>
-<circle cx="50" cy="50" r="4" fill="#FFD700"/>
-<circle cx="47" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="53" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="50" cy="53" r="1.5" fill="#FF1493" opacity="0.6"/>
+
+<div class="sakura" style="right:12%;top:35%;"><svg width="45" viewBox="0 0 100 100" fill="none">
+<g opacity="0.5"><circle cx="50" cy="50" r="3" fill="#E8567F"/>
+<path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFD0DC" transform="rotate(0 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFCAD6" transform="rotate(72 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFD0DC" transform="rotate(144 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFCAD6" transform="rotate(216 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFD0DC" transform="rotate(288 50 50)"/>
 </g></svg></div>
-<div class="sakura" style="right:15%;top:25%;opacity:0.6;"><svg width="45" viewBox="0 0 100 100" fill="none">
-<g opacity="0.9">
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(0 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(72 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(144 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(216 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/>
-<circle cx="50" cy="50" r="8" fill="#FF69B4"/>
-<circle cx="50" cy="50" r="4" fill="#FFD700"/>
-<circle cx="47" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="53" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="50" cy="53" r="1.5" fill="#FF1493" opacity="0.6"/>
+
+<div class="sakura" style="left:7%;top:40%;"><svg width="40" viewBox="0 0 100 100" fill="none">
+<g opacity="0.45"><circle cx="50" cy="50" r="3" fill="#E8567F"/>
+<path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFCAD6" transform="rotate(10 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFD0DC" transform="rotate(82 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFCAD6" transform="rotate(154 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFD0DC" transform="rotate(226 50 50)"/><path d="M50 18 C53 28 56 34 50 40 C44 34 47 28 50 18Z" fill="#FFCAD6" transform="rotate(298 50 50)"/>
 </g></svg></div>
-<div class="sakura" style="left:12%;bottom:20%;opacity:0.5;"><svg width="50" viewBox="0 0 100 100" fill="none">
-<g opacity="0.9">
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(0 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(72 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(144 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(216 50 50)"/>
-<path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/>
-<circle cx="50" cy="50" r="8" fill="#FF69B4"/>
-<circle cx="50" cy="50" r="4" fill="#FFD700"/>
-<circle cx="47" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="53" cy="47" r="1.5" fill="#FF1493" opacity="0.6"/>
-<circle cx="50" cy="53" r="1.5" fill="#FF1493" opacity="0.6"/>
+
+<div class="sakura" style="right:3%;bottom:25%;"><svg width="50" viewBox="0 0 100 100" fill="none">
+<g opacity="0.55"><circle cx="50" cy="50" r="3" fill="#E8567F"/>
+<path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(20 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFCAD6" transform="rotate(92 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(164 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFCAD6" transform="rotate(236 50 50)"/><path d="M50 15 C54 28 58 35 50 42 C42 35 46 28 50 15Z" fill="#FFD0DC" transform="rotate(308 50 50)"/>
+</g></svg></div>
+
+<div class="sakura" style="left:2%;bottom:30%;"><svg width="35" viewBox="0 0 100 100" fill="none">
+<g opacity="0.4"><circle cx="50" cy="50" r="2.5" fill="#E8567F"/>
+<path d="M50 20 C53 30 55 35 50 40 C45 35 47 30 50 20Z" fill="#FFD0DC" transform="rotate(0 50 50)"/><path d="M50 20 C53 30 55 35 50 40 C45 35 47 30 50 20Z" fill="#FFCAD6" transform="rotate(72 50 50)"/><path d="M50 20 C53 30 55 35 50 40 C45 35 47 30 50 20Z" fill="#FFD0DC" transform="rotate(144 50 50)"/><path d="M50 20 C53 30 55 35 50 40 C45 35 47 30 50 20Z" fill="#FFCAD6" transform="rotate(216 50 50)"/><path d="M50 20 C53 30 55 35 50 40 C45 35 47 30 50 20Z" fill="#FFD0DC" transform="rotate(288 50 50)"/>
 </g></svg></div>
 <!-- Falling petals -->
+<div class="sakura-petal" style="left:3%;top:-10px;animation-duration:10s;animation-delay:0s;"><svg width="18" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.7"/></svg></div>
+<div class="sakura-petal" style="left:10%;top:-10px;animation-duration:12s;animation-delay:1.5s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFBDCE" opacity="0.6"/></svg></div>
+<div class="sakura-petal" style="left:18%;top:-10px;animation-duration:9s;animation-delay:3s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.65"/></svg></div>
+<div class="sakura-petal" style="left:25%;top:-10px;animation-duration:11s;animation-delay:0.5s;"><svg width="12" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFCAD6" opacity="0.55"/></svg></div>
+<div class="sakura-petal" style="left:33%;top:-10px;animation-duration:8s;animation-delay:4s;"><svg width="15" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.7"/></svg></div>
+<div class="sakura-petal" style="left:42%;top:-10px;animation-duration:13s;animation-delay:2s;"><svg width="17" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFBDCE" opacity="0.6"/></svg></div>
+<div class="sakura-petal" style="left:50%;top:-10px;animation-duration:10s;animation-delay:5s;"><svg width="13" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.5"/></svg></div>
+<div class="sakura-petal" style="left:58%;top:-10px;animation-duration:11s;animation-delay:1s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFCAD6" opacity="0.65"/></svg></div>
+<div class="sakura-petal" style="left:66%;top:-10px;animation-duration:9s;animation-delay:3.5s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.7"/></svg></div>
+<div class="sakura-petal" style="left:74%;top:-10px;animation-duration:12s;animation-delay:0.8s;"><svg width="18" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFBDCE" opacity="0.55"/></svg></div>
+<div class="sakura-petal" style="left:82%;top:-10px;animation-duration:10s;animation-delay:4.5s;"><svg width="15" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.6"/></svg></div>
+<div class="sakura-petal" style="left:90%;top:-10px;animation-duration:8s;animation-delay:2.5s;"><svg width="13" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFCAD6" opacity="0.65"/></svg></div>
+<div class="sakura-petal" style="left:7%;top:-10px;animation-duration:14s;animation-delay:6s;"><svg width="11" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.5"/></svg></div>
+<div class="sakura-petal" style="left:48%;top:-10px;animation-duration:11s;animation-delay:7s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFBDCE" opacity="0.55"/></svg></div>
+<div class="sakura-petal" style="left:95%;top:-10px;animation-duration:9s;animation-delay:1.2s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 C18 6 20 12 15 19 C10 12 12 6 15 2Z" fill="#FFD0DC" opacity="0.6"/></svg></div>
 
 
 
-
-
-
-
-
-<div class="sakura-petal" style="left:8%;top:-10px;animation-duration:9s;animation-delay:0s;"><svg width="20" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.7"/></svg></div>
-<div class="sakura-petal" style="left:22%;top:-10px;animation-duration:11s;animation-delay:2s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFC4D1" opacity="0.6"/></svg></div>
-<div class="sakura-petal" style="left:45%;top:-10px;animation-duration:8s;animation-delay:4s;"><svg width="18" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB0C0" opacity="0.7"/></svg></div>
-<div class="sakura-petal" style="left:65%;top:-10px;animation-duration:12s;animation-delay:1s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.5"/></svg></div>
-<div class="sakura-petal" style="left:80%;top:-10px;animation-duration:10s;animation-delay:3s;"><svg width="17" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFC4D1" opacity="0.6"/></svg></div>
-<div class="sakura-petal" style="left:35%;top:-10px;animation-duration:13s;animation-delay:6s;"><svg width="15" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.5"/></svg></div>
-<div class="sakura-petal" style="left:55%;top:-10px;animation-duration:9s;animation-delay:5s;"><svg width="19" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB0C0" opacity="0.7"/></svg></div>
-<div class="sakura-petal" style="left:92%;top:-10px;animation-duration:10s;animation-delay:7s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFC4D1" opacity="0.6"/></svg></div>
-<div class="sakura-petal" style="left:5%;top:-10px;animation-duration:11s;animation-delay:1.5s;"><svg width="15" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.6"/></svg></div>
-<div class="sakura-petal" style="left:15%;top:-10px;animation-duration:9s;animation-delay:3.5s;"><svg width="13" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFC4D1" opacity="0.7"/></svg></div>
-<div class="sakura-petal" style="left:28%;top:-10px;animation-duration:10s;animation-delay:5s;"><svg width="16" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFAEC0" opacity="0.5"/></svg></div>
-<div class="sakura-petal" style="left:42%;top:-10px;animation-duration:12s;animation-delay:2s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.6"/></svg></div>
-<div class="sakura-petal" style="left:58%;top:-10px;animation-duration:8s;animation-delay:4.5s;"><svg width="12" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFC4D1" opacity="0.55"/></svg></div>
-<div class="sakura-petal" style="left:72%;top:-10px;animation-duration:11s;animation-delay:1s;"><svg width="17" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFAEC0" opacity="0.65"/></svg></div>
-<div class="sakura-petal" style="left:88%;top:-10px;animation-duration:10s;animation-delay:6s;"><svg width="14" viewBox="0 0 30 20"><path d="M15 2 Q20 8 15 18 Q10 8 15 2Z" fill="#FFB7C5" opacity="0.5"/></svg></div>
-
-
-<!-- Extra sakura flowers -->
-<div class="sakura" style="left:3%;top:25%;"><svg width="50" viewBox="0 0 100 100" fill="none"><g opacity="0.7"><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(0 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(72 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(144 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(216 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="6" fill="#FF69B4"/></g></svg></div>
-<div class="sakura" style="right:3%;top:45%;"><svg width="45" viewBox="0 0 100 100" fill="none"><g opacity="0.6"><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(0 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(72 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(144 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(216 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(288 50 50)"/><circle cx="50" cy="50" r="5" fill="#FF69B4"/></g></svg></div>
-<div class="sakura" style="left:8%;bottom:15%;"><svg width="40" viewBox="0 0 100 100" fill="none"><g opacity="0.5"><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(15 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(87 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB0C0" transform="rotate(159 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFC4D1" transform="rotate(231 50 50)"/><path d="M50 10 Q55 25 50 40 Q45 25 50 10Z" fill="#FFB7C5" transform="rotate(303 50 50)"/><circle cx="50" cy="50" r="5" fill="#FF69B4" opacity="0.8"/></g></svg></div>
+<!-- China girl mascot -->
+<div class="china-girl-fixed"><img src="china-girl.png" alt="mascot"/></div>
 <div class="app">
   <div class="header">
     <div class="logo">R</div>
@@ -220,9 +200,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;pointer-eve
   <!-- 検索 -->
   <div class="section active" id="s-search">
     <div class="card">
-      <div class="china-girl-peek" style="position:absolute;right:15px;top:-55px;z-index:10;pointer-events:none;width:90px;height:65px;overflow:hidden;border-radius:10px 10px 0 0;">
-<img src="china-girl.png" alt="mascot" style="width:90px;height:auto;filter:drop-shadow(0 2px 8px rgba(255,36,66,0.25));"/>
-</div>
+      
 <div class="section-title">ジャンルを入力してAIに競合を探させる</div>
       <div class="form-row">
         <div class="form-group">
