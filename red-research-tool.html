@@ -568,6 +568,7 @@
         <div class="tab-row">
           <button class="tab active" onclick="go(&#39;search&#39;)">検索</button>
           <button class="tab" onclick="go(&#39;list&#39;)">一覧 (<span id="list-cnt">0</span>)</button>
+          <button class="tab" onclick="go(&#39;map&#39;)">マップ</button>
           <button class="tab" onclick="go(&#39;settings&#39;)">設定</button>
         </div>
       </section>
@@ -575,25 +576,24 @@
         <div class="center-card-wrap">
           <div class="petal-card">
             <div class="form-area">
+              <!-- ジャンル別テンプレート -->
+              <div style="margin-bottom:14px;">
+                <div style="font-size:12px;font-weight:700;color:#a06278;margin-bottom:8px;">📂 ジャンルから選ぶ</div>
+                <div id="genre-templates" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              </div>
               <div class="field">
                 <label for="sg-genre">ジャンル・テーマ *</label>
                 <input id="sg-genre" class="input" type="text" placeholder="例：ライフスタイル、美容、グルメ">
+              </div>
+              <!-- プリセットキーワード表示エリア -->
+              <div id="preset-keywords-area" style="display:none;margin:8px 0;padding:10px 12px;background:#FFFAFB;border:1px dashed #F0CDD5;border-radius:10px;">
+                <div style="font-size:11px;font-weight:700;color:#8E2D4E;margin-bottom:6px;">💡 このジャンルでよく使われるREDキーワード（📋タップでコピー）</div>
+                <div id="preset-keywords-list" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
               </div>
               <div class="grid-2">
                 <div class="field">
                   <label for="sg-note">追加条件（任意）</label>
                   <input id="sg-note" class="input" type="text" placeholder="例：日本在住、中国語と日本語混合、最近伸びている">
-                </div>
-                <div class="field">
-                  <label for="sg-size">フォロワー規模（目安）</label>
-                  <select id="sg-size" class="select">
-                    <option value="指定なし">指定なし</option>
-                    <option value="1000-5000">マイクロ (1,000〜5,000)</option>
-                    <option value="5000-10000">小規模 (5,000〜10,000)</option>
-                    <option value="10000-50000">中規模 (10,000〜50,000)</option>
-                    <option value="50000-100000">大規模 (50,000〜100,000)</option>
-                    <option value="100000+">メガ (100,000+)</option>
-                  </select>
                 </div>
               </div>
               <div class="button-row">
@@ -603,6 +603,14 @@
                 <div id="prog-bar" class="progress-bar"></div>
               </div>
               <div id="search-tip" class="search-tip"></div>
+              <!-- 検索履歴 -->
+              <div id="search-history-area" style="margin-top:12px;display:none;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <div style="font-size:12px;font-weight:700;color:#a06278;">🕒 検索履歴</div>
+                  <button onclick="clearSearchHistory()" style="font-size:11px;color:#c6a0ad;background:none;border:none;cursor:pointer;">クリア</button>
+                </div>
+                <div id="search-history-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              </div>
             </div>
             <div id="candidates" class="candidates-area"></div>
           </div>
@@ -628,6 +636,18 @@
               </table>
             </div>
             <div id="empty-msg" class="empty-msg" style="display:none;">まだアカウントが保存されていません。<br>「検索」タブから探してみましょう</div>
+          </div>
+        </div>
+      </section>
+      <section id="s-map" class="section">
+        <div class="center-card-wrap">
+          <div class="list-card" style="width:750px;max-width:92vw;">
+            <div class="list-header">
+              <div class="list-title">競合マップ</div>
+            </div>
+            <div id="map-empty" class="empty-msg" style="display:none;">アカウントを保存するとマップが表示されます。<br>「検索」タブから探してみましょう</div>
+            <div id="map-container" style="position:relative;width:100%;min-height:420px;background:linear-gradient(135deg,#FFF8FA,#FFF0F5);border-radius:16px;border:1px solid #F0CDD5;overflow:hidden;"></div>
+            <div id="map-legend" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
           </div>
         </div>
       </section>
@@ -689,14 +709,16 @@
     }
 
     function go(tab){
-      ['search','list','settings'].forEach(t=>{
+      ['search','list','map','settings'].forEach(t=>{
         document.getElementById('s-'+t).classList.toggle('active',t===tab);
       });
       document.querySelectorAll('.tab').forEach((btn,i)=>{
-        const tabs=['search','list','settings'];
+        const tabs=['search','list','map','settings'];
         btn.classList.toggle('active',tabs[i]===tab);
       });
       if(tab==='list'){renderChips();renderTable();}
+      if(tab==='search'){renderSearchHistory();}
+      if(tab==='map'){renderMap();}
       if(tab==='settings'){
         const k=localStorage.getItem('anthropic_key')||'';
         document.getElementById('api-key-input').value=k?'':'';
@@ -763,6 +785,42 @@
       }
     }
 
+    // --- 検索履歴 ---
+    function loadSearchHistory(){
+      try{return JSON.parse(localStorage.getItem('red_search_history')||'[]');}catch(e){return[];}
+    }
+    function saveSearchHistory(genre,note){
+      let hist=loadSearchHistory();
+      // 重複除去（同じgenre+noteの組み合わせ）
+      hist=hist.filter(h=>!(h.genre===genre&&h.note===note));
+      hist.unshift({genre,note,ts:Date.now()});
+      if(hist.length>10)hist=hist.slice(0,10); // 最大10件
+      localStorage.setItem('red_search_history',JSON.stringify(hist));
+      renderSearchHistory();
+    }
+    function renderSearchHistory(){
+      const hist=loadSearchHistory();
+      const area=document.getElementById('search-history-area');
+      const list=document.getElementById('search-history-list');
+      if(!hist.length){area.style.display='none';return;}
+      area.style.display='block';
+      list.innerHTML=hist.map(h=>{
+        const label=h.note?`${h.genre}（${h.note}）`:h.genre;
+        const safeG=h.genre.replace(/'/g,"\\'");
+        const safeN=(h.note||'').replace(/'/g,"\\'");
+        return `<button onclick="replaySearch('${safeG}','${safeN}')" style="background:#FBEFF4;border:1px solid #F0CDD5;border-radius:8px;padding:4px 10px;font-size:12px;color:#8E2D4E;cursor:pointer;font-weight:600;white-space:nowrap;">${label}</button>`;
+      }).join('');
+    }
+    function replaySearch(genre,note){
+      document.getElementById('sg-genre').value=genre;
+      document.getElementById('sg-note').value=note;
+      runSearch();
+    }
+    function clearSearchHistory(){
+      localStorage.removeItem('red_search_history');
+      renderSearchHistory();
+    }
+
     async function runSearch(){
       const genre=document.getElementById('sg-genre').value.trim();
       if(!genre){alert('ジャンルを入力してください');return;}
@@ -771,8 +829,10 @@
         alert('APIキーが設定されていません。「設定」タブからAPIキーを入力してください。');
         go('settings');return;
       }
-      const size=document.getElementById('sg-size').value;
+      // 検索履歴に保存
       const note=document.getElementById('sg-note').value.trim();
+      saveSearchHistory(genre,note);
+      const size='';
       const btn=document.getElementById('btn-search');
       const MAX_RESULTS=20;
       btn.disabled=true;btn.textContent=`検索中...（0/${MAX_RESULTS}件）`;
@@ -806,18 +866,24 @@ ${noteLine}
 ${sizeLine}${excludeStr}
 
 【中国語検索キーワードの作り方 — 公式アカウント発見を最優先】
-- **1つ目のキーワードは必ず「公式アカウントが見つかりやすいもの」にする**。
-- 公式アカウントを見つけるコツ：ブランドの中国語正式名 or 英語名 + "官方"（例: "星巴克 官方"）、または "小红书号" で登録されてそうな名前。
+- **最も重要な目標: ユーザーがREDで「ユーザー検索」したとき、公式アカウントが上位に出るキーワードを提案すること。**
+- **1つ目のキーワードは必ず「公式アカウントそのものの名前」にする**。REDの公式アカウントは小红书号（ユーザー名）として英語名やブランド名をそのまま使っていることが多い。
+- 公式アカウント名の推測方法:
+  - 多くの日本ブランドは **英語名をそのままアカウント名に使う**（例: "MUJI無印良品"、"SHISEIDO资生堂"、"SK-II"、"UNIQLO"）
+  - ホテルは **英語正式名 + 都市名** が多い（例: "The Ritz-Carlton Tokyo"、"Park Hyatt Tokyo"、"Aman Tokyo"）
+  - 日本語名しかないブランドは **中国語正式名** を使う（例: "虹夕诺雅"、"茑屋书店"）
+- **2つ目は "ブランド名+官方" で検索用**。これはアカウント名ではないが、公式アカウントを「ユーザー」タブで絞り込む時に役立つ。
+- 3つ目は関連ワードや投稿ジャンル名（任意）。
 - RED（中国語プラットフォーム）で実際に検索されるときの **中国語表記** を使う。
-- 日本語名 → 中国語簡体字に翻訳（例: 星野リゾート → "虹夕诺雅"、リッツ・カールトン東京 → "东京丽思卡尔顿"、蔦屋書店 → "茑屋书店"、銀座 → "银座"、スターバックス → "星巴克"）
-- 英語のブランド名は **英語のまま** もRED上で使われる（例: "Starbucks"、"LOUIS VUITTON"）。
-- キーワードは **3つまで** 提案。並び順の優先度:
-  1. **公式アカウント名 or ブランド中国語正式名**（最もヒットしやすい正式名称）
-  2. **"ブランド名+官方"** or 英語名（公式を絞り込むため）
-  3. 関連ワードや人気の投稿ジャンル名
-- 例：「星野リゾート」→ ["虹夕诺雅", "星野集团 官方", "星野度假村"]
-- 例：「リッツ・カールトン東京」→ ["东京丽思卡尔顿", "Ritz-Carlton Tokyo 官方", "丽思卡尔顿 下午茶"]
-- 例：「蔦屋書店」→ ["茑屋书店", "TSUTAYA 官方", "代官山茑屋"]
+- 日本語名 → 中国語簡体字に翻訳（例: 星野リゾート → "虹夕诺雅"、リッツ・カールトン東京 → "东京丽思卡尔顿"、蔦屋書店 → "茑屋书店"、銀座 → "银座"）
+- キーワードは **3つまで** 提案。並び順:
+  1. **公式アカウント名そのもの**（英語名 or 中国語正式名。REDでユーザー検索したら公式が直接出る名前）
+  2. **"ブランド名+官方"**（公式を見つけるための検索補助）
+  3. 関連ワード（任意）
+- 例：「星野リゾート」→ ["虹夕诺雅 Hoshinoya", "星野集团 官方", "星野度假村"]
+- 例：「リッツ・カールトン東京」→ ["The Ritz-Carlton Tokyo", "丽思卡尔顿 官方", "东京丽思卡尔顿 下午茶"]
+- 例：「蔦屋書店」→ ["TSUTAYA BOOKSTORE", "茑屋书店 官方", "代官山茑屋"]
+- 例：「無印良品」→ ["MUJI無印良品", "无印良品 官方", "MUJI 日本"]
 
 【フィールド】
 - name: 日本語での表示名（必須、日本語で）。日本のものに限る。
@@ -945,7 +1011,7 @@ ${sizeLine}${excludeStr}
           ? `<div style="margin:8px 0;padding:8px 10px;background:#FFFAFB;border:1px dashed #F0CDD5;border-radius:10px;">
                <div style="font-size:11px;color:#8E2D4E;margin-bottom:4px;font-weight:600;">🔍 REDでこのキーワードで検索（📋でコピー → REDアプリに貼り付け）：</div>
                <div style="display:flex;flex-wrap:wrap;align-items:center;">${keywordPills}</div>
-               <div style="font-size:10px;color:#C6A0AD;margin-top:4px;">💡 1つ目のキーワードで公式アカウントが見つかりやすいです。「用户」タブで絞り込むと◎</div>
+               <div style="font-size:10px;color:#C6A0AD;margin-top:4px;">💡 コピーしてREDアプリの検索に貼り付け → 検索結果の上にある「ユーザー」をタップすると公式アカウントが見つかりやすいです</div>
              </div>`
           : '';
         return`<div class="candidate-card" id="cand-${i}">
@@ -1062,7 +1128,7 @@ ${sizeLine}${excludeStr}
           <td style="white-space:nowrap;font-weight:700;color:${a.eng&&a.eng!=='—'?'var(--pink-7)':'#c6a0ad'};">${a.eng||'—'}</td>
           <td style="max-width:160px;color:#a66279;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.memo||'—'}</td>
           <td>${a.url?`<a class="link" href="${a.url}" target="_blank">開く →</a>`:'—'}</td>
-          <td><button style="font-size:12px;color:#d4b0be;background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:4px;" onmouseover="this.style.color='var(--pink-7)'" onmouseout="this.style.color='#d4b0be'" onclick="del(${a.id})">✕</button></td>
+          <td><button style="font-size:12px;color:#fff;background:#E8838F;border:none;cursor:pointer;padding:4px 10px;border-radius:8px;font-weight:700;" onclick="del(${a.id})">削除</button></td>
         </tr>`;
       }).join('');
     }
@@ -1092,7 +1158,197 @@ ${sizeLine}${excludeStr}
       setTimeout(()=>t.classList.remove('show'),2200);
     }
 
+    // =============================================
+    // ジャンル別テンプレート & プリセットキーワード
+    // =============================================
+    const GENRE_TEMPLATES = [
+      { label:'🏨 ホテル・旅館', genre:'ホテル・旅館', note:'高級ホテル、温泉旅館、リゾート',
+        keywords:['酒店','温泉旅馆','日本酒店推荐','高级酒店','民宿','度假村','东京酒店','京都住宿','北海道酒店','日式旅馆'] },
+      { label:'💄 コスメ・美容', genre:'コスメ・美容', note:'スキンケア、メイク、日本コスメ',
+        keywords:['日本化妆品','护肤','日系彩妆','药妆','资生堂','SK-II','日本美妆推荐','防晒','面膜','日本药妆必买'] },
+      { label:'👗 ファッション', genre:'ファッション', note:'日本ブランド、セレクトショップ',
+        keywords:['日系穿搭','日本时尚','优衣库','日本品牌','潮牌','中古','古着','日本买什么','穿搭分享','日本购物'] },
+      { label:'🍣 グルメ・飲食', genre:'グルメ・飲食', note:'レストラン、カフェ、食品ブランド',
+        keywords:['日本美食','东京美食','日料','拉面','寿司','日本甜品','咖啡店','居酒屋','米其林','日本餐厅推荐'] },
+      { label:'✈️ 観光・旅行', genre:'観光・旅行', note:'観光スポット、体験、旅行情報',
+        keywords:['日本旅游','东京攻略','京都旅游','大阪','北海道','富士山','日本签证','赏樱','日本自由行','日本交通'] },
+      { label:'🎮 エンタメ', genre:'エンターテインメント', note:'アニメ、ゲーム、音楽、テーマパーク',
+        keywords:['日本动漫','日本游戏','迪士尼','环球影城','日本音乐','声优','漫画','手办','日本展览','演唱会'] },
+      { label:'🏠 インテリア・雑貨', genre:'インテリア・雑貨', note:'無印、ニトリ、生活雑貨',
+        keywords:['日式家居','MUJI','无印良品','日本收纳','日本杂货','生活好物','日式装修','Nitori','日本文具','日本厨房'] },
+      { label:'💪 ヘルスケア', genre:'ヘルスケア・健康', note:'サプリ、フィットネス、医療',
+        keywords:['日本保健品','日本药品','日本体检','健康管理','日本医美','酵素','胶原蛋白','日本减肥','日本眼药水','日本感冒药'] },
+      { label:'📱 テクノロジー', genre:'テクノロジー', note:'家電、ガジェット、IT企業',
+        keywords:['日本电子产品','索尼','任天堂','日本家电','相机','松下','日本科技','智能家居','日本手机','富士'] },
+      { label:'🎓 教育・留学', genre:'教育・留学', note:'日本語学校、留学、塾',
+        keywords:['日本留学','日语学习','日本大学','语言学校','日本读研','东京大学','日本奖学金','在日生活','日本工作','日本签证'] },
+    ];
+
+    function initGenreTemplates(){
+      const container=document.getElementById('genre-templates');
+      container.innerHTML=GENRE_TEMPLATES.map((t,i)=>
+        `<button onclick="selectGenreTemplate(${i})" style="background:#fff;border:1.5px solid #F0CDD5;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;color:#8E2D4E;cursor:pointer;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.background='#FBEFF4';this.style.borderColor='#E8838F'" onmouseout="this.style.background='#fff';this.style.borderColor='#F0CDD5'">${t.label}</button>`
+      ).join('');
+    }
+
+    function selectGenreTemplate(idx){
+      const t=GENRE_TEMPLATES[idx];
+      document.getElementById('sg-genre').value=t.genre;
+      document.getElementById('sg-note').value=t.note;
+      // プリセットキーワード表示
+      showPresetKeywords(t.keywords);
+      // テンプレートボタンをハイライト
+      document.querySelectorAll('#genre-templates button').forEach((btn,i)=>{
+        if(i===idx){btn.style.background='#FBEFF4';btn.style.borderColor='#E8838F';}
+        else{btn.style.background='#fff';btn.style.borderColor='#F0CDD5';}
+      });
+    }
+
+    function showPresetKeywords(keywords){
+      const area=document.getElementById('preset-keywords-area');
+      const list=document.getElementById('preset-keywords-list');
+      if(!keywords||!keywords.length){area.style.display='none';return;}
+      area.style.display='block';
+      list.innerHTML=keywords.map(kw=>{
+        const safe=kw.replace(/'/g,"\\'");
+        return `<span onclick="copyText('${safe}',this)" style="display:inline-flex;align-items:center;background:#fff;border:1px solid #E6D4DB;border-radius:8px;padding:3px 8px;font-size:12px;color:#8E2D4E;cursor:pointer;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.background='#FBEFF4'" onmouseout="this.style.background='#fff'">${kw} <span style="margin-left:4px;font-size:10px;color:#C93F6C;">📋</span></span>`;
+      }).join('');
+    }
+
+    // =============================================
+    // 競合マップ
+    // =============================================
+    const MAP_COLORS={
+      'ブランド':'#E8838F','店舗':'#F0A868','施設':'#7EC8A0','観光地':'#6AADCF',
+      'クリエイター':'#C78FD6','ホテル':'#E8838F','レストラン':'#F0A868','カフェ':'#D4A574',
+      'default':'#B8A0C8'
+    };
+
+    function getMapColor(cat){
+      if(!cat)return MAP_COLORS['default'];
+      for(const[key,color] of Object.entries(MAP_COLORS)){
+        if(cat.includes(key))return color;
+      }
+      // ジャンル名からハッシュでカラー生成
+      let hash=0;
+      for(let i=0;i<cat.length;i++)hash=cat.charCodeAt(i)+((hash<<5)-hash);
+      const hue=Math.abs(hash)%360;
+      return `hsl(${hue},55%,65%)`;
+    }
+
+    function renderMap(){
+      const container=document.getElementById('map-container');
+      const legend=document.getElementById('map-legend');
+      const empty=document.getElementById('map-empty');
+      if(accounts.length===0){
+        empty.style.display='block';
+        container.style.display='none';
+        legend.style.display='none';
+        return;
+      }
+      empty.style.display='none';
+      container.style.display='block';
+      legend.style.display='flex';
+
+      // ジャンル/カテゴリでグループ化
+      const groups={};
+      accounts.forEach(a=>{
+        const cat=a.category||a.genre||'その他';
+        if(!groups[cat])groups[cat]=[];
+        groups[cat].push(a);
+      });
+      const catNames=Object.keys(groups);
+
+      // レイアウト計算
+      const W=container.clientWidth||700;
+      const H=Math.max(420, catNames.length*80);
+      container.style.minHeight=H+'px';
+
+      // 各カテゴリのエリアを計算（グリッド配置）
+      const cols=Math.min(3,catNames.length);
+      const rows=Math.ceil(catNames.length/cols);
+      const cellW=W/cols;
+      const cellH=H/rows;
+
+      let html='';
+      // SVG背景（区画線）
+      html+=`<svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 ${W} ${H}">`;
+      // グリッド線
+      for(let c=1;c<cols;c++){
+        html+=`<line x1="${c*cellW}" y1="0" x2="${c*cellW}" y2="${H}" stroke="#F0CDD5" stroke-width="1" stroke-dasharray="4,4"/>`;
+      }
+      for(let r=1;r<rows;r++){
+        html+=`<line x1="0" y1="${r*cellH}" x2="${W}" y2="${r*cellH}" stroke="#F0CDD5" stroke-width="1" stroke-dasharray="4,4"/>`;
+      }
+      html+='</svg>';
+
+      catNames.forEach((cat,idx)=>{
+        const col=idx%cols;
+        const row=Math.floor(idx/cols);
+        const cx=col*cellW;
+        const cy=row*cellH;
+        const color=getMapColor(cat);
+        const items=groups[cat];
+
+        // カテゴリラベル
+        html+=`<div style="position:absolute;left:${cx+8}px;top:${cy+6}px;font-size:11px;font-weight:800;color:${color};opacity:0.7;pointer-events:none;">${cat}（${items.length}件）</div>`;
+
+        // バブル配置
+        items.forEach((a,ai)=>{
+          // フォロワー数でバブルサイズを決定
+          const followers=parseInt(a.followers)||0;
+          const minR=18, maxR=Math.min(42, cellW/4);
+          let r=minR;
+          if(followers>0){
+            r=Math.min(maxR, minR + Math.log10(followers+1)*4);
+          }
+          // セル内でのランダム配置（重ならないように散らす）
+          const angle=(ai/(items.length||1))*Math.PI*2 + idx*0.5;
+          const dist=Math.min(cellW,cellH)*0.25;
+          const bx=cx + cellW/2 + Math.cos(angle)*dist*(0.6+ai*0.08) - r;
+          const by=cy + cellH/2 + Math.sin(angle)*dist*(0.6+ai*0.08) - r;
+          // クリップ
+          const px=Math.max(cx+4, Math.min(cx+cellW-r*2-4, bx));
+          const py=Math.max(cy+24, Math.min(cy+cellH-r*2-4, by));
+          const conf=a.confidence||'medium';
+          const opacity=conf==='high'?1:conf==='medium'?0.8:0.6;
+          const border=conf==='high'?`3px solid ${color}`:`1.5px solid ${color}`;
+          const name=(a.name||'?').length>8?(a.name||'?').slice(0,7)+'…':(a.name||'?');
+          const followStr=followers>10000?Math.round(followers/10000)+'万':followers>1000?Math.round(followers/1000)+'K':followers||'?';
+
+          html+=`<div onclick="showMapDetail(${a.id})" style="position:absolute;left:${px}px;top:${py}px;width:${r*2}px;height:${r*2}px;border-radius:50%;background:${color}22;border:${border};display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;opacity:${opacity};transition:transform 0.2s,box-shadow 0.2s;overflow:hidden;" onmouseover="this.style.transform='scale(1.15)';this.style.boxShadow='0 4px 16px ${color}44'" onmouseout="this.style.transform='scale(1)';this.style.boxShadow='none'">
+            <div style="font-size:${Math.max(9,r/3)}px;font-weight:800;color:#5a3040;text-align:center;line-height:1.2;padding:0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:${r*2-6}px;">${name}</div>
+            <div style="font-size:${Math.max(8,r/4)}px;color:#a06278;font-weight:600;">${followStr}</div>
+          </div>`;
+        });
+      });
+
+      container.innerHTML=html;
+
+      // 凡例
+      const usedCats=[...new Set(catNames)];
+      legend.innerHTML=usedCats.map(cat=>{
+        const color=getMapColor(cat);
+        return `<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#7a5565;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color};"></span>${cat}</span>`;
+      }).join('');
+    }
+
+    function showMapDetail(id){
+      const a=accounts.find(x=>x.id===id);
+      if(!a)return;
+      const followers=a.followers||'不明';
+      const posts=a.posts||'不明';
+      const likes=a.likes||'不明';
+      const msg=`📌 ${a.name}\n\nジャンル: ${a.genre||'—'}\nフォロワー: ${followers}\n投稿数: ${posts}\nいいね: ${likes}\nメモ: ${a.memo||'—'}${a.red_id?'\nRED ID: @'+a.red_id:''}`;
+      alert(msg);
+    }
+
+    // =============================================
+    // 初期化
+    // =============================================
+    initGenreTemplates();
     document.getElementById('list-cnt').textContent=accounts.length;
+    renderSearchHistory();
   </script>
 
 
