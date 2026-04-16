@@ -781,11 +781,11 @@
 
 各候補には「**REDでこのキーワードで検索するといい**」という**中国語の検索キーワード**を3つまで提案してください。ユーザーはそれをコピーしてRED上で検索します。
 
-【🚨 絶対条件 — 対象は「日本のブランド/会社/店舗/施設/日本人クリエイター」のみ】
+【\uD83D\uDEA8 絶対条件 — 対象は「日本のブランド/会社/店舗/施設/日本人クリエイター」のみ】
 - 中国本土の企業・ブランド・店舗・クリエイターは **絶対に含めない**。
 - 中国系ECブランドは全てNG。Shein、花西子、完美日记、李佳琦、赵露思、等はNG。
 - OKなのは「日本に本社/本店がある会社」「日本の店舗・施設・観光地」「日本国籍または日本在住の日本人クリエイター」「日本発のブランド」。
-- グローバルブランドは **日本法人 / 日本支店 / 東京店 / 日本限定展開** のものだけOK（例: Ritz-Carlton Tokyo、Dior 日本）。
+- グローバルブランドは **日本法人 / 日本支店 / 東京店 / 日本限定展開** のものだけOK。
 - 迷ったら **除外**。
 
 【検索条件】
@@ -797,7 +797,7 @@ ${sizeLine}${excludeStr}
 - **1つ目のキーワードは必ず「公式アカウントが見つかりやすいもの」にする**。
 - 公式アカウントを見つけるコツ：ブランドの中国語正式名 or 英語名 + "官方"（例: "星巴克 官方"）、または "小红书号" で登録されてそうな名前。
 - RED（中国語プラットフォーム）で実際に検索されるときの **中国語表記** を使う。
-- 日本語名 → 中国語簡体字に翻訳（例: 星野リゾート → "虹夕诺雅"、リッツ・カールトン東京 → "东京丽思卡尔顿"、蔦屋書店 → "茑屋书店"、銀座 → "银座"、スターバックス → "星巴克"）
+- 日本語名 → 中国語簡体字に翻訳（例: 星野リゾート → "虹夕诺雅"、リッツ・カールトン東京 → "东京丽思卡尔顿"、蔦屋書店 → "茑屋书店"）
 - 英語のブランド名は **英語のまま** もRED上で使われる（例: "Starbucks"、"LOUIS VUITTON"）。
 - キーワードは **3つまで** 提案。並び順の優先度:
   1. **公式アカウント名 or ブランド中国語正式名**（最もヒットしやすい正式名称）
@@ -808,30 +808,30 @@ ${sizeLine}${excludeStr}
 - 例：「蔦屋書店」→ ["茑屋书店", "TSUTAYA 官方", "代官山茑屋"]
 
 【フィールド】
-- name: 日本語での表示名（必須、日本語で）。日本のものに限る。
-- search_keywords: **RED上で検索するときの中国語キーワードの配列**（必須、1〜3個）。最初のキーワードは最重要・最ヒットしそうなもの。
+- name: 日本語での表示名（必須）
+- search_keywords: **中国語キーワードの配列**（必須、1〜3個）
 - category: 「ブランド」「店舗」「施設」「観光地」「クリエイター」のいずれか
-- memo: 40〜60字で「日本の何か」「RED上で何が投稿されてそうか」を日本語で
-- confidence: "high"（RED公式運用の可能性が高い / 人気店）/ "medium"（可能性あり）/ "low"（手がかりレベル）
+- memo: 40〜60字で日本語の説明
+- confidence: \"high\" / \"medium\" / \"low\"
 
 【重要】
-- 空配列 [] は返さない。最低5件、手がかり扱いで良いので列挙する。
-- **中国本土のブランド/人物は1件も含めない**（最優先ルール）。
-- RED ID や URL は出さなくて良い。**中国語検索キーワードだけ**がユーザーの役に立つ。
+- 空配列 [] は返さない。最低5件。
+- **中国本土のブランド/人物は1件も含めない**。
+- RED ID や URL は不要。**中国語検索キーワードだけ**返す。
 
-【出力】**JSON配列のみ**。前後の説明文・マークダウン不要。
+【出力】**JSON配列のみ**。
 [
   {
-    "name": "リッツ・カールトン東京",
-    "search_keywords": ["东京丽思卡尔顿", "Ritz-Carlton Tokyo", "东京 丽思卡尔顿 下午茶"],
-    "category": "施設",
-    "genre": "${genre}",
-    "memo": "六本木ミッドタウンの最高級ホテル。アフタヌーンティー・客室ビューの投稿多数",
-    "confidence": "high"
+    \"name\": \"リッツ・カールトン東京\",
+    \"search_keywords\": [\"东京丽思卡尔顿\", \"Ritz-Carlton Tokyo\", \"东京 丽思卡尔顿 下午茶\"],
+    \"category\": \"施設\",
+    \"genre\": \"${genre}\",
+    \"memo\": \"六本木ミッドタウンの最高級ホテル。アフタヌーンティー・客室ビューの投稿多数\",
+    \"confidence\": \"high\"
   }
 ]`;
         try{
-          // Netlify本番はプロキシ経由、それ以外（プレビュー/ローカル）は直叩き
+          // Netlify本番はプロキシ経由、それ以外は直叩き
           const isNetlify=location.hostname.endsWith('.netlify.app')||location.hostname.endsWith('.netlify.com');
           const endpoint=isNetlify?'/.netlify/functions/proxy':'https://api.anthropic.com/v1/messages';
           const headers={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
@@ -844,14 +844,12 @@ ${sizeLine}${excludeStr}
               max_tokens:4000,
               messages:[{role:'user',content:prompt}]
             })
-          });
+          });;
           const data=await res.json();
-          // content may include text / server_tool_use / web_search_tool_result blocks
-          const t=Array.isArray(data.content)?data.content.map(c=>c&&c.type==='text'?(c.text||''):'').filter(Boolean).join('\n'):'';
+          const t=data.content?.map(c=>c.text||'').filter(Boolean).join('');
           let parsed=[];
           try{
-            const cleaned=t.replace(/```json|```/g,'');
-            // Find last JSON array in the text (in case AI wrote explanation first)
+            const bt3=String.fromCharCode(96,96,96);const cleaned=t.replace(new RegExp(bt3+'json|'+bt3,'g'),'');
             const arrays=cleaned.match(/\[[\s\S]*?\](?=\s*$)|\[[\s\S]*\]/g);
             if(arrays&&arrays.length){
               for(let i=arrays.length-1;i>=0;i--){
@@ -906,76 +904,27 @@ ${sizeLine}${excludeStr}
         const [cbg,cfg]=confColor[a.confidence]||confColor['low'];
         const eng=calcEng(a.followers,a.likes,a.posts);
         const valid=isValidRedUrl(a.url);
-        // search_keywords 配列（旧データとの互換: なければ name を1件入れる）
         const kws=Array.isArray(a.search_keywords)&&a.search_keywords.length>0
           ? a.search_keywords.filter(k=>k&&typeof k==='string')
           : [a.name||''].filter(Boolean);
-        const categoryBadge=a.category?`<span class="badge" style="background:#FCE7EE;color:#8E2D4E;">${a.category}</span>`:'';
+        const categoryBadge=a.category?'<span class="badge" style="background:#FCE7EE;color:#8E2D4E;">'+a.category+'</span>':'';
         const verifyBadge=valid
-          ? `<span class="badge" style="background:#E8F5E9;color:#2e7d32;">✓ REDのURLあり</span>`
+          ? '<span class="badge" style="background:#E8F5E9;color:#2e7d32;">✓ REDのURLあり</span>'
           : '';
         const mentionLine=a.red_id
-          ? `<div style="font-family:'Menlo','Consolas',monospace;font-size:12px;color:#a06278;margin-bottom:4px;">RED ID: @${a.red_id}</div>`
+          ? '<div style="font-family:monospace;font-size:12px;color:#a06278;margin-bottom:4px;">RED ID: @'+a.red_id+'</div>'
           : '';
-        // 中国語キーワードピル
         const keywordPills=kws.map((kw,ki)=>{
           const safeKw=kw.replace(/'/g,"\\'").replace(/"/g,'&quot;');
-          const href=redSearchUrl(kw);
           const bg=ki===0?'#FBEFF4':'#F7F0F3';
           const borderColor=ki===0?'#F0CDD5':'#E6D4DB';
           const fontWeight=ki===0?'700':'500';
-          return `<span style="display:inline-flex;align-items:center;gap:0;background:${bg};border:1px solid ${borderColor};border-radius:8px;padding:4px 4px 4px 10px;margin:3px 4px 3px 0;font-size:13px;font-weight:${fontWeight};color:#8E2D4E;cursor:pointer;" onclick="copyText('${safeKw}',this.querySelector('.cp-btn'))">
-            <span style="white-space:nowrap;">${kw}</span>
-            <button type="button" class="cp-btn" onclick="event.stopPropagation();copyText('${safeKw}',this)" title="コピーしてREDアプリで検索" style="margin-left:6px;background:transparent;border:none;cursor:pointer;padding:2px 8px;font-size:12px;color:#C93F6C;border-left:1px solid ${borderColor};">📋コピー</button>
-          </span>`;
+          return '<span style="display:inline-flex;align-items:center;gap:0;background:'+bg+';border:1px solid '+borderColor+';border-radius:8px;padding:4px 4px 4px 10px;margin:3px 4px 3px 0;font-size:13px;font-weight:'+fontWeight+';color:#8E2D4E;cursor:pointer;" onclick="copyText(\''+safeKw+'\',this.querySelector(\'.cp-btn\'))"><span style="white-space:nowrap;">'+kw+'</span><button type="button" class="cp-btn" onclick="event.stopPropagation();copyText(\''+safeKw+'\',this)" title="コピーしてREDアプリで検索" style="margin-left:6px;background:transparent;border:none;cursor:pointer;padding:2px 8px;font-size:12px;color:#C93F6C;border-left:1px solid '+borderColor+';">📋コピー</button></span>';
         }).join('');
         const keywordBlock=kws.length>0
-          ? `<div style="margin:8px 0;padding:8px 10px;background:#FFFAFB;border:1px dashed #F0CDD5;border-radius:10px;">
-               <div style="font-size:11px;color:#8E2D4E;margin-bottom:4px;font-weight:600;">🔍 REDでこのキーワードで検索（📋でコピー → REDアプリに貼り付け）：</div>
-               <div style="display:flex;flex-wrap:wrap;align-items:center;">${keywordPills}</div>
-               <div style="font-size:10px;color:#C6A0AD;margin-top:4px;">💡 1つ目のキーワードで公式アカウントが見つかりやすいです。「用户」タブで絞り込むと◎</div>
-             </div>`
+          ? '<div style="margin:8px 0;padding:8px 10px;background:#FFFAFB;border:1px dashed #F0CDD5;border-radius:10px;"><div style="font-size:11px;color:#8E2D4E;margin-bottom:4px;font-weight:600;">🔍 REDでこのキーワードで検索（📋でコピー → REDアプリに貼り付け）：</div><div style="display:flex;flex-wrap:wrap;align-items:center;">'+keywordPills+'</div><div style="font-size:10px;color:#C6A0AD;margin-top:4px;">💡 1つ目のキーワードで公式アカウントが見つかりやすいです。「用户」タブで絞り込むと◎</div></div>'
           : '';
-        return`<div class="candidate-card" id="cand-${i}">
-          <div class="candidate-name">${a.name||'不明'}</div>
-          ${mentionLine}
-          <div class="candidate-meta">
-            ${a.followers?'👥 '+fmtN(a.followers)+' ':''}
-            ${a.posts?'📝 '+a.posts+'投稿 ':''}
-            ${eng!=='—'?'💗 ENG '+eng+' ':''}
-            ${categoryBadge}
-            <span class="badge" style="background:${cbg};color:${cfg};">${confLabel[a.confidence]||'手がかり'}</span>
-            ${verifyBadge}
-          </div>
-          <div style="font-size:12px;color:#b59aa4;margin-top:2px;">${a.memo||''}</div>
-          ${keywordBlock}
-          <div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm" onclick="openForm(${i})">＋ 一覧に追加</button>
-            <button class="btn btn-outline btn-sm" onclick="document.getElementById('cand-${i}').remove()">スキップ</button>
-          </div>
-          <div class="add-form" id="form-${i}">
-            <div class="form-row" style="margin-bottom:6px;">
-              <div class="form-group"><label class="lbl">アカウント名（表示名）</label><input id="fn-${i}" value="${a.name||''}"/></div>
-              <div class="form-group"><label class="lbl">RED ID（小红书号）</label><input id="fr-${i}" value="${a.red_id||''}" placeholder="例: mekoko_jp"/></div>
-            </div>
-            <div class="form-row" style="margin-bottom:6px;">
-              <div class="form-group"><label class="lbl">ジャンル</label>
-                <select id="fg-${i}">${['ライフスタイル','美容','グルメ','ファッション','旅行','フィットネス','その他'].map(g=>`<option${g===a.genre||g===genre?' selected':''}>${g}</option>`).join('')}</select>
-              </div>
-              <div class="form-group"><label class="lbl">フォロワー数</label><input id="ff-${i}" value="${a.followers||''}" placeholder="例: 50000"/></div>
-            </div>
-            <div class="form-row" style="margin-bottom:6px;">
-              <div class="form-group"><label class="lbl">投稿数</label><input id="fp-${i}" value="${a.posts||''}" placeholder="例: 80"/></div>
-              <div class="form-group"><label class="lbl">いいね総数</label><input id="fl-${i}" value="${a.likes||''}" placeholder="例: 120000"/></div>
-            </div>
-            <div class="form-group" style="margin-bottom:6px;"><label class="lbl">REDプロフィールURL</label><input id="fu-${i}" value="${a.url||''}" placeholder="https://www.xiaohongshu.com/user/profile/..."/></div>
-            <div class="form-group" style="margin-bottom:8px;"><label class="lbl">特徴メモ</label><input id="fm-${i}" value="${a.memo||''}"/></div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn btn-primary btn-sm" onclick="saveCandidate(${i})">保存する</button>
-              <button class="btn btn-outline btn-sm" onclick="closeForm(${i})">キャンセル</button>
-            </div>
-          </div>
-        </div>`;
+        return '<div class="candidate-card" id="cand-'+i+'"><div class="candidate-name">'+(a.name||'不明')+'</div>'+mentionLine+'<div class="candidate-meta">'+(a.followers?'👥 '+fmtN(a.followers)+' ':'')+(a.posts?'📝 '+a.posts+'投稿 ':'')+(eng!=='—'?'💗 ENG '+eng+' ':'')+categoryBadge+'<span class="badge" style="background:'+cbg+';color:'+cfg+';">'+(confLabel[a.confidence]||'手がかり')+'</span>'+verifyBadge+'</div><div style="font-size:12px;color:#b59aa4;margin-top:2px;">'+(a.memo||'')+'</div>'+keywordBlock+'<div style="display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="openForm('+i+')">＋ 一覧に追加</button><button class="btn btn-outline btn-sm" onclick="document.getElementById(\'cand-'+i+'\').remove()">スキップ</button></div>';
       }).join('');
     }
 
