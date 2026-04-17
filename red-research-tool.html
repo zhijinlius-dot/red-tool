@@ -30,14 +30,14 @@
       background-color: #FEF9FC;
     }
     html {
-      overflow-x: hidden;
+      overflow-x: clip;
       -webkit-overflow-scrolling: touch;
       width: 100%;
       max-width: 100%;
     }
     body {
       position: relative;
-      overflow-x: hidden;
+      overflow-x: clip;
       -webkit-overflow-scrolling: touch;
       width: 100%;
       max-width: 100vw;
@@ -55,7 +55,7 @@
       align-items: flex-start;
       justify-content: center;
       z-index: 10;
-      overflow-x: hidden;
+      overflow-x: clip;
       width: 100%;
       max-width: 100%;
     }
@@ -65,7 +65,7 @@
       max-width: 1530px;
       min-height: 100vh;
       margin: 0 auto;
-      overflow-x: hidden;
+      overflow-x: clip;
       padding: 0 24px 40px;
     }
 
@@ -144,11 +144,11 @@
       position: fixed;
       pointer-events: none;
       z-index: 2;
-      max-width: 20vw;
+      max-width: 18vw;
     }
     .sakura-corner img { display: block; width: 100%; height: auto; }
-    .sakura-corner-tl { top: 0; left: 0; width: 280px; max-width: 20vw; }
-    .sakura-corner-tr { top: 0; right: 0; width: 260px; max-width: 20vw; }
+    .sakura-corner-tl { top: 0; left: 0; width: 240px; max-width: 18vw; }
+    .sakura-corner-tr { top: 0; right: 0; width: 220px; max-width: 18vw; }
 
     .tab-row {
       display: flex;
@@ -351,12 +351,14 @@
       z-index: 100;
       width: 100%;
       max-width: 100%;
+      overflow-x: clip;
       margin-top: 0;
     }
     .left-character {
       position: relative;
       width: 380px;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-width: 0;
       opacity: 1 !important;
       filter: none !important;
       mix-blend-mode: normal !important;
@@ -397,7 +399,8 @@
       position: relative;
       width: 380px;
       margin-bottom: 0;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-width: 0;
       opacity: 1 !important;
       filter: none !important;
       mix-blend-mode: normal !important;
@@ -574,6 +577,7 @@
       <section class="top">
         <div class="tab-row">
           <button class="tab active" onclick="go(&#39;search&#39;)">検索</button>
+          <button class="tab" onclick="go(&#39;kwresearch&#39;)">KW発掘</button>
           <button class="tab" onclick="go(&#39;list&#39;)">一覧 (<span id="list-cnt">0</span>)</button>
           <button class="tab" onclick="go(&#39;settings&#39;)">設定</button>
         </div>
@@ -647,6 +651,45 @@
                 <button onclick="copyTranslation()" title="コピー" style="position:absolute;top:6px;right:6px;font-size:12px;color:#c6a0ad;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#BE525A';this.style.background='#FBEFF4'" onmouseout="this.style.color='#c6a0ad';this.style.background='none'">📋</button>
               </div>
               <div id="tr-loading" style="display:none;margin-top:8px;text-align:center;font-size:12px;color:#c6a0ad;">翻訳中...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- KWリサーチタブ -->
+      <section id="s-kwresearch" class="section">
+        <div class="center-card-wrap">
+          <div class="petal-card">
+            <div class="form-area">
+              <div style="margin-bottom:14px;padding:10px 14px;background:#FFFAFB;border-radius:12px;border:1px solid #F0CDD5;font-size:12px;color:#8E5E6E;line-height:1.7;">
+                <div style="font-weight:800;color:#BE525A;margin-bottom:2px;font-size:13px;">🔍 マニアックKW発掘ツール</div>
+                <div style="font-size:11px;color:#A07080;">ジャンルを入力すると、REDで手作業では見つけにくいニッチ・マニアックなアカウントに辿りつくための中国語検索キーワードをAIが20個リストアップします。</div>
+              </div>
+              <!-- ジャンルテンプレート（KWリサーチ用） -->
+              <div style="margin-bottom:14px;">
+                <div style="font-size:12px;font-weight:700;color:#a06278;margin-bottom:8px;">📂 ジャンルから選ぶ</div>
+                <div id="kw-genre-templates" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+              </div>
+              <div class="field">
+                <label for="kw-genre">ジャンル・テーマ *</label>
+                <input id="kw-genre" class="input" type="text" placeholder="例：ホテル・旅館、コスメ・美容、飲食">
+              </div>
+              <div class="field" style="margin-top:8px;">
+                <label for="kw-note">絞り込み条件（任意）</label>
+                <input id="kw-note" class="input" type="text" placeholder="例：地方の小さな店、個人経営、在日中国人向け">
+              </div>
+              <div class="button-row" style="margin-top:12px;">
+                <button id="btn-kw" class="search-btn" type="button" onclick="runKwResearch()">♡ マニアックKWを発掘 ♡</button>
+              </div>
+              <div id="kw-prog" class="progress-wrap">
+                <div id="kw-prog-bar" class="progress-bar"></div>
+              </div>
+              <div id="kw-results" style="display:none;margin-top:16px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div style="font-size:14px;font-weight:800;color:#BE525A;">発掘キーワード一覧</div>
+                  <button class="btn btn-sm btn-primary" onclick="copyAllKw()">すべてコピー</button>
+                </div>
+                <div id="kw-list"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -738,20 +781,20 @@
     }
 
     function go(tab){
-      ['search','list','settings'].forEach(t=>{
-        document.getElementById('s-'+t).classList.toggle('active',t===tab);
+      ['search','kwresearch','list','settings'].forEach(t=>{
+        const el=document.getElementById('s-'+t);
+        if(el)el.classList.toggle('active',t===tab);
       });
       document.querySelectorAll('.tab').forEach((btn,i)=>{
-        const tabs=['search','list','settings'];
+        const tabs=['search','kwresearch','list','settings'];
         btn.classList.toggle('active',tabs[i]===tab);
       });
-      // 検索タブ以外ではキャラ・フッターを非表示
       const showChars=tab==='search';
       document.querySelector('.characters-row').style.display=showChars?'flex':'none';
       document.querySelector('.footer').style.display=showChars?'flex':'none';
       if(tab==='list'){renderChips();renderTable();}
       if(tab==='search'){renderSearchHistory();}
-      // マップ削除済み
+      if(tab==='kwresearch'){renderKwGenreTemplates();}
       if(tab==='settings'){
         const k=localStorage.getItem('anthropic_key')||'';
         document.getElementById('api-key-input').value=k?'':'';
@@ -1234,6 +1277,121 @@ ${sizeLine}${excludeStr}
     }
 
     // =============================================
+    // =============================================
+    // KWリサーチ機能
+    // =============================================
+    function renderKwGenreTemplates(){
+      const el=document.getElementById('kw-genre-templates');
+      if(!el)return;
+      el.innerHTML=GENRE_TEMPLATES.map((t,i)=>
+        `<button onclick="selectKwGenre(${i})" style="background:#FBEFF4;border:1px solid #F0CDD5;border-radius:8px;padding:5px 10px;font-size:12px;color:#8E2D4E;cursor:pointer;font-weight:600;white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.background='#F8DDE5'" onmouseout="this.style.background='#FBEFF4'">${t.label}</button>`
+      ).join('');
+    }
+    function selectKwGenre(idx){
+      const t=GENRE_TEMPLATES[idx];
+      document.getElementById('kw-genre').value=t.genre;
+    }
+
+    async function runKwResearch(){
+      const genre=document.getElementById('kw-genre').value.trim();
+      if(!genre){alert('ジャンルを入力してください');return;}
+      const note=document.getElementById('kw-note').value.trim();
+      const apiKey=getApiKey();
+      const isNetlify=location.hostname.endsWith('.netlify.app')||location.hostname.endsWith('.netlify.com');
+      if(!apiKey&&!isNetlify){alert('設定タブでAPIキーを入力してください');return;}
+
+      const btn=document.getElementById('btn-kw');
+      const prog=document.getElementById('kw-prog');
+      const progBar=document.getElementById('kw-prog-bar');
+      const resultsDiv=document.getElementById('kw-results');
+      btn.disabled=true;btn.textContent='発掘中...';
+      prog.style.display='block';progBar.style.width='0%';
+      resultsDiv.style.display='none';
+
+      let w=0;
+      const timer=setInterval(()=>{w=Math.min(w+Math.random()*8,90);progBar.style.width=w+'%';},400);
+
+      const noteClause=note?`\n追加条件: ${note}`:'';
+      const prompt=`あなたは小紅書（RED）の競合リサーチ専門家です。
+
+ジャンル: ${genre}${noteClause}
+
+このジャンルで、日本企業・日本ブランド・日本在住クリエイターのうち、**手作業では見つけにくいニッチ・マニアックなアカウント**に辿りつくための中国語検索キーワードを20個リストアップしてください。
+
+条件:
+- 大手・有名ブランドではなく、中小・個人・ローカル・ニッチ系が引っかかるキーワード
+- REDの検索窓にそのまま貼って使える中国語キーワード
+- 一般的すぎるKW（例: 日本旅游）は避け、具体的・マニアックなものを優先
+- 地名+業種、ニッチカテゴリ、中国人コミュニティ内で使われるスラングや略語も含める
+- KWの横に日本語で簡単な説明をつける
+
+以下のJSON形式で返してください（説明や前置き不要、JSONのみ）:
+[
+  {"kw": "中国語キーワード", "desc": "日本語の簡単な説明", "level": "ニッチ度（★〜★★★）"},
+  ...
+]`;
+
+      try{
+        const endpoint=isNetlify?'/.netlify/functions/proxy':'https://api.anthropic.com/v1/messages';
+        const headers={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+        if(!isNetlify)headers['x-api-key']=apiKey;
+        const res=await fetch(endpoint,{
+          method:'POST',headers,
+          body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]})
+        });
+        const data=await res.json();
+        const t=Array.isArray(data.content)?data.content.filter(c=>c.type==='text').map(c=>c.text).join(''):'';
+        let parsed=[];
+        try{
+          const cleaned=t.replace(/```json|```/g,'');
+          const arrays=cleaned.match(/\[[\s\S]*?\](?=\s*$)|\[[\s\S]*\]/g);
+          if(arrays&&arrays.length){
+            for(let i=arrays.length-1;i>=0;i--){
+              try{const p=JSON.parse(arrays[i]);if(Array.isArray(p)){parsed=p;break;}}catch(_){}
+            }
+          }
+        }catch(e){console.error('kw parse error',e);}
+
+        clearInterval(timer);progBar.style.width='100%';
+        setTimeout(()=>{prog.style.display='none';},500);
+
+        if(parsed.length){
+          renderKwResults(parsed);
+          resultsDiv.style.display='block';
+        }else{
+          alert('キーワードの取得に失敗しました。もう一度お試しください。');
+        }
+      }catch(e){
+        console.error('kw error',e);
+        clearInterval(timer);prog.style.display='none';
+        alert('エラーが発生しました: '+e.message);
+      }
+      btn.disabled=false;btn.textContent='♡ マニアックKWを発掘 ♡';
+    }
+
+    function renderKwResults(keywords){
+      const el=document.getElementById('kw-list');
+      el.innerHTML=keywords.map((k,i)=>{
+        const safeKw=(k.kw||'').replace(/'/g,"\\'");
+        const stars=k.level||'★';
+        return `<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:${i%2===0?'#fff':'#FFFAFB'};border-radius:10px;margin-bottom:4px;border:1px solid #F0CDD5;">
+          <span style="font-size:11px;color:#c6a0ad;min-width:20px;">${i+1}</span>
+          <span style="font-size:14px;font-weight:700;color:#8E2D4E;min-width:120px;">${k.kw}</span>
+          <button onclick="copyText('${safeKw}',this)" title="コピー" style="font-size:11px;color:#c6a0ad;background:none;border:none;cursor:pointer;padding:2px 4px;flex-shrink:0;" onmouseover="this.style.color='#BE525A'" onmouseout="this.style.color='#c6a0ad'">📋</button>
+          <span style="font-size:12px;color:#A07080;flex:1;">${k.desc||''}</span>
+          <span style="font-size:11px;color:#E8838F;white-space:nowrap;">${stars}</span>
+        </div>`;
+      }).join('');
+      // データを保持
+      window._lastKwResults=keywords;
+    }
+
+    function copyAllKw(){
+      if(!window._lastKwResults||!window._lastKwResults.length)return;
+      const text=window._lastKwResults.map((k,i)=>`${i+1}. ${k.kw}　（${k.desc||''}）`).join('\n');
+      navigator.clipboard.writeText(text).then(()=>showToast('すべてコピーしました'));
+    }
+
     // 日中翻訳機能
     // =============================================
     let transDir='ja2zh';
@@ -1499,6 +1657,7 @@ ${sizeLine}${excludeStr}
     // 初期化
     // =============================================
     initGenreTemplates();
+    renderKwGenreTemplates();
     document.getElementById('list-cnt').textContent=accounts.length;
     renderSearchHistory();
   </script>
