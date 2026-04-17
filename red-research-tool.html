@@ -472,10 +472,14 @@
     }
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
     .list-title { font-size: 20px; font-weight: 900; color: #BE525A; }
-    .genre-chips { display: flex; gap: 6px; flex-wrap: wrap; }
-    .chip { padding: 6px 16px; border-radius: 999px; border: 1.5px solid #D4A0B4; background: #fff; font-size: 13px; font-weight: 700; color: #6E3A4E; cursor: pointer; transition: all 0.2s; }
+    .genre-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .chip { padding: 7px 18px; border-radius: 999px; border: 1.5px solid #D4A0B4; background: #fff; font-size: 13px; font-weight: 700; color: #6E3A4E; cursor: pointer; transition: all 0.2s; }
     .chip:hover { background: #FFF0F5; border-color: #C93F6C; }
     .chip.active { background: linear-gradient(180deg, #F06C98, #D94F7A); color: white; border-color: transparent; box-shadow: 0 3px 10px rgba(201,63,108,0.25); }
+    .chip .chip-count { font-size: 11px; opacity: 0.85; margin-left: 3px; }
+    .bulk-bar { display: none; align-items: center; gap: 10px; padding: 8px 14px; background: #FFF0F5; border: 1.5px solid #E8A8B2; border-radius: 12px; margin-bottom: 10px; }
+    .bulk-bar.show { display: flex; }
+    .bulk-bar span { font-size: 13px; font-weight: 700; color: #A84455; }
     .search-bar { width: 100%; height: 44px; border-radius: 10px; border: 1.5px solid #D4A0B4; background: #fff; padding: 0 16px; font-size: 15px; color: #5a3548; outline: none; margin-bottom: 12px; }
     .search-bar:focus { border-color: #C93F6C; box-shadow: 0 0 0 3px rgba(201, 63, 108, 0.12); }
     .tbl-wrap { overflow-x: auto; border-radius: 12px; }
@@ -600,6 +604,25 @@
                   <span style="font-size:11px;color:#C6A0AD;">検索するとここに履歴が表示されます</span>
                 </div>
               </div>
+              <!-- 簡易翻訳 -->
+              <div id="translate-section" style="margin-bottom:14px;padding:12px 14px;background:#FFFAFB;border-radius:12px;border:1px solid #F0CDD5;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                  <div style="font-size:12px;font-weight:700;color:#a06278;">🔄 日中カンタン翻訳</div>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:8px;">
+                  <button id="tr-dir-ja" class="chip active" onclick="setTransDir('ja2zh')" style="font-size:12px;padding:4px 12px;">日→中</button>
+                  <button id="tr-dir-zh" class="chip" onclick="setTransDir('zh2ja')" style="font-size:12px;padding:4px 12px;">中→日</button>
+                </div>
+                <div style="display:flex;gap:8px;align-items:stretch;">
+                  <textarea id="tr-input" placeholder="翻訳したいテキストを入力..." style="flex:1;min-height:44px;max-height:120px;border-radius:10px;border:1.5px solid #D4A0B4;background:#fff;padding:8px 12px;font-size:13px;color:#5a3548;resize:vertical;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#C93F6C';this.style.boxShadow='0 0 0 3px rgba(201,63,108,0.12)'" onblur="this.style.borderColor='#D4A0B4';this.style.boxShadow='none'"></textarea>
+                  <button onclick="runTranslate()" style="padding:0 14px;border-radius:10px;background:linear-gradient(180deg,#F06C98,#D94F7A);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;min-width:50px;">翻訳</button>
+                </div>
+                <div id="tr-result" style="display:none;margin-top:8px;padding:8px 12px;background:#fff;border-radius:10px;border:1px solid #E8CDD5;font-size:13px;color:#5a3548;line-height:1.6;position:relative;">
+                  <div id="tr-result-text"></div>
+                  <button onclick="copyTranslation()" title="コピー" style="position:absolute;top:6px;right:6px;font-size:12px;color:#c6a0ad;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#BE525A';this.style.background='#FBEFF4'" onmouseout="this.style.color='#c6a0ad';this.style.background='none'">📋</button>
+                </div>
+                <div id="tr-loading" style="display:none;margin-top:8px;text-align:center;font-size:12px;color:#c6a0ad;">翻訳中...</div>
+              </div>
               <div class="field">
                 <label for="sg-genre">ジャンル・テーマ *</label>
                 <input id="sg-genre" class="input" type="text" placeholder="例：ライフスタイル、美容、グルメ">
@@ -639,10 +662,15 @@
             </div>
             <div id="genre-chips" class="genre-chips"></div>
             <input id="q" class="search-bar" type="text" placeholder="アカウント名やメモで検索..." oninput="renderTable()">
+            <div id="bulk-bar" class="bulk-bar">
+              <input type="checkbox" id="select-all-cb" onchange="toggleSelectAll(this.checked)" style="width:16px;height:16px;accent-color:#D94F7A;cursor:pointer;">
+              <span id="bulk-count">0件選択中</span>
+              <button class="btn btn-sm" style="background:#E8838F;color:#fff;border:none;font-weight:700;margin-left:auto;" onclick="bulkDelete()">選択を削除</button>
+            </div>
             <div class="tbl-wrap">
               <table>
                 <thead>
-                  <tr><th>#</th><th>アカウント</th><th>RED ID</th><th>ジャンル</th><th>フォロワー</th><th>投稿数</th><th>いいね</th><th>ENG率</th><th>メモ</th><th>リンク</th><th></th></tr>
+                  <tr><th style="width:32px;"><input type="checkbox" id="select-all-head" onchange="toggleSelectAll(this.checked)" style="width:15px;height:15px;accent-color:#D94F7A;cursor:pointer;"></th><th>#</th><th>アカウント</th><th>RED ID</th><th>ジャンル</th><th>フォロワー</th><th>投稿数</th><th>メモ</th><th>リンク</th><th></th></tr>
                 </thead>
                 <tbody id="tbl"></tbody>
               </table>
@@ -1091,18 +1119,26 @@ ${sizeLine}${excludeStr}
       showToast('@'+acc.name+' を追加しました');
     }
 
+    let selectedIds=new Set();
+
     function renderChips(){
-      const genres=['all',...new Set(accounts.map(a=>a.genre).filter(Boolean))];
-      document.getElementById('genre-chips').innerHTML=genres.map(g=>
-        `<button class="chip${g===activeGenre?' active':''}" onclick="setGenre('${g}',this)">${g==='all'?'すべて':g}</button>`
-      ).join('');
+      const genreCounts={};
+      accounts.forEach(a=>{if(a.genre)genreCounts[a.genre]=(genreCounts[a.genre]||0)+1;});
+      const genres=['all',...Object.keys(genreCounts).sort()];
+      document.getElementById('genre-chips').innerHTML=genres.map(g=>{
+        const cnt=g==='all'?accounts.length:genreCounts[g];
+        const label=g==='all'?'すべて':g;
+        return `<button class="chip${g===activeGenre?' active':''}" onclick="setGenre('${g.replace(/'/g,"\\'")}',this)">${label}<span class="chip-count">(${cnt})</span></button>`;
+      }).join('');
     }
 
     function setGenre(g,btn){
       activeGenre=g;
+      selectedIds.clear();
       document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
       renderTable();
+      updateBulkBar();
     }
 
     function renderTable(){
@@ -1114,12 +1150,13 @@ ${sizeLine}${excludeStr}
       });
       const tbody=document.getElementById('tbl');
       const empty=document.getElementById('empty-msg');
-      if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';return;}
+      if(filtered.length===0){tbody.innerHTML='';empty.style.display='block';updateBulkBar();return;}
       empty.style.display='none';
       tbody.innerHTML=filtered.map((a,i)=>{
         const [bg,fg]=GENRE_COLORS[a.genre]||['#F1EFE8','#5F5E5A'];
         const mentionHrefT=isValidRedUrl(a.url)?a.url:redSearchUrl(a.red_id||a.name);
         const safeRedIdT=(a.red_id||'').replace(/'/g,"\\'");
+        const checked=selectedIds.has(a.id)?'checked':'';
         const redIdCell=a.red_id
           ? `<span style="display:inline-flex;gap:4px;align-items:center;white-space:nowrap;">
                <a href="${mentionHrefT}" target="_blank" rel="noopener" title="REDで開く" style="font-family:'Menlo','Consolas',monospace;font-size:12px;color:#C93F6C;text-decoration:none;">@${a.red_id}</a>
@@ -1127,31 +1164,66 @@ ${sizeLine}${excludeStr}
              </span>`
           : `<span style="color:#c6a0ad;">—</span>`;
         return`<tr>
+          <td style="width:32px;"><input type="checkbox" ${checked} onchange="toggleSelect(${a.id},this.checked)" style="width:15px;height:15px;accent-color:#D94F7A;cursor:pointer;"></td>
           <td style="color:#c6a0ad;width:24px;">${i+1}</td>
           <td style="font-weight:700;white-space:nowrap;color:var(--text-strong);">${a.name}</td>
           <td style="white-space:nowrap;">${redIdCell}</td>
           <td><span class="badge" style="background:${bg};color:${fg};">${a.genre}</span></td>
           <td style="white-space:nowrap;">${fmtN(a.followers)}</td>
           <td>${a.posts||'—'}</td>
-          <td style="white-space:nowrap;">${fmtN(a.likes)}</td>
-          <td style="white-space:nowrap;font-weight:700;color:${a.eng&&a.eng!=='—'?'var(--pink-7)':'#c6a0ad'};">${a.eng||'—'}</td>
           <td style="max-width:160px;color:#a66279;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.memo||'—'}</td>
           <td>${a.url?`<a class="link" href="${a.url}" target="_blank">開く →</a>`:'—'}</td>
           <td><button style="font-size:12px;color:#fff;background:#E8838F;border:none;cursor:pointer;padding:4px 10px;border-radius:8px;font-weight:700;" onclick="del(${a.id})">削除</button></td>
         </tr>`;
       }).join('');
+      updateBulkBar();
+    }
+
+    function toggleSelect(id,checked){
+      if(checked)selectedIds.add(id); else selectedIds.delete(id);
+      updateBulkBar();
+    }
+    function toggleSelectAll(checked){
+      const q=(document.getElementById('q')?.value||'').toLowerCase();
+      const filtered=accounts.filter(a=>{
+        const mq=!q||a.name.toLowerCase().includes(q)||(a.memo||'').toLowerCase().includes(q);
+        const mg=activeGenre==='all'||a.genre===activeGenre;
+        return mq&&mg;
+      });
+      selectedIds.clear();
+      if(checked)filtered.forEach(a=>selectedIds.add(a.id));
+      renderTable();
+    }
+    function updateBulkBar(){
+      const bar=document.getElementById('bulk-bar');
+      const cnt=selectedIds.size;
+      if(cnt>0){bar.classList.add('show');document.getElementById('bulk-count').textContent=cnt+'件選択中';}
+      else{bar.classList.remove('show');}
+      const ha=document.getElementById('select-all-head');
+      if(ha)ha.checked=false;
+    }
+    function bulkDelete(){
+      if(!selectedIds.size)return;
+      if(!confirm(selectedIds.size+'件のアカウントを削除しますか？'))return;
+      accounts=accounts.filter(a=>!selectedIds.has(a.id));
+      selectedIds.clear();
+      saveAccounts();renderChips();renderTable();
+      document.getElementById('list-cnt').textContent=accounts.length;
+      showToast('削除しました');
     }
 
     function del(id){
       if(!confirm('削除しますか？'))return;
       accounts=accounts.filter(a=>a.id!==id);
+      selectedIds.delete(id);
       saveAccounts();renderChips();renderTable();
+      document.getElementById('list-cnt').textContent=accounts.length;
     }
 
     function exportCSV(){
       if(accounts.length===0){alert('データがありません');return;}
-      const header='アカウント名,RED ID,ジャンル,フォロワー数,投稿数,いいね総数,ENG率,特徴メモ,URL,登録日';
-      const rows=accounts.map(a=>[a.name,a.red_id,a.genre,a.followers,a.posts,a.likes,a.eng,a.memo,a.url,a.savedAt].map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(','));
+      const header='アカウント名,RED ID,ジャンル,フォロワー数,投稿数,特徴メモ,URL,登録日';
+      const rows=accounts.map(a=>[a.name,a.red_id,a.genre,a.followers,a.posts,a.memo,a.url,a.savedAt].map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(','));
       const csv='\uFEFF'+header+'\n'+rows.join('\n');
       const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
       const url=URL.createObjectURL(blob);
@@ -1159,6 +1231,61 @@ ${sizeLine}${excludeStr}
       a.href=url;a.download='RED競合アカウント一覧.csv';a.click();
       URL.revokeObjectURL(url);
       showToast('CSVを出力しました');
+    }
+
+    // =============================================
+    // 日中翻訳機能
+    // =============================================
+    let transDir='ja2zh';
+    function setTransDir(dir){
+      transDir=dir;
+      document.getElementById('tr-dir-ja').classList.toggle('active',dir==='ja2zh');
+      document.getElementById('tr-dir-zh').classList.toggle('active',dir==='zh2ja');
+      document.getElementById('tr-input').placeholder=dir==='ja2zh'?'日本語を入力...':'输入中文...';
+    }
+    async function runTranslate(){
+      const input=document.getElementById('tr-input').value.trim();
+      if(!input){return;}
+      const apiKey=getApiKey();
+      if(!apiKey&&!(location.hostname.endsWith('.netlify.app')||location.hostname.endsWith('.netlify.com'))){
+        alert('設定タブでAPIキーを入力してください');return;
+      }
+      const resultDiv=document.getElementById('tr-result');
+      const resultText=document.getElementById('tr-result-text');
+      const loading=document.getElementById('tr-loading');
+      resultDiv.style.display='none';
+      loading.style.display='block';
+      const fromLang=transDir==='ja2zh'?'日本語':'中国語（簡体字）';
+      const toLang=transDir==='ja2zh'?'中国語（簡体字）':'日本語';
+      const prompt=`以下のテキストを${fromLang}から${toLang}に翻訳してください。小紅書（RED）で使われる自然な表現にしてください。翻訳結果のみを返し、説明は不要です。\n\n${input}`;
+      try{
+        const isNetlify=location.hostname.endsWith('.netlify.app')||location.hostname.endsWith('.netlify.com');
+        const endpoint=isNetlify?'/.netlify/functions/proxy':'https://api.anthropic.com/v1/messages';
+        const headers={'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+        if(!isNetlify)headers['x-api-key']=apiKey;
+        const res=await fetch(endpoint,{
+          method:'POST',headers,
+          body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+        });
+        const data=await res.json();
+        const t=Array.isArray(data.content)?data.content.filter(c=>c.type==='text').map(c=>c.text).join(''):'';
+        if(t){
+          resultText.textContent=t;
+          resultDiv.style.display='block';
+        }else{
+          resultText.textContent='翻訳結果を取得できませんでした';
+          resultDiv.style.display='block';
+        }
+      }catch(e){
+        console.error('translate error',e);
+        resultText.textContent='エラーが発生しました';
+        resultDiv.style.display='block';
+      }
+      loading.style.display='none';
+    }
+    function copyTranslation(){
+      const text=document.getElementById('tr-result-text').textContent;
+      navigator.clipboard.writeText(text).then(()=>showToast('コピーしました'));
     }
 
     function showToast(msg){
