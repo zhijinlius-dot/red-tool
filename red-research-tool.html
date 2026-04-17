@@ -604,25 +604,6 @@
                   <span style="font-size:11px;color:#C6A0AD;">検索するとここに履歴が表示されます</span>
                 </div>
               </div>
-              <!-- 簡易翻訳 -->
-              <div id="translate-section" style="margin-bottom:14px;padding:12px 14px;background:#FFFAFB;border-radius:12px;border:1px solid #F0CDD5;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                  <div style="font-size:12px;font-weight:700;color:#a06278;">🔄 日中カンタン翻訳</div>
-                </div>
-                <div style="display:flex;gap:6px;margin-bottom:8px;">
-                  <button id="tr-dir-ja" class="chip active" onclick="setTransDir('ja2zh')" style="font-size:12px;padding:4px 12px;">日→中</button>
-                  <button id="tr-dir-zh" class="chip" onclick="setTransDir('zh2ja')" style="font-size:12px;padding:4px 12px;">中→日</button>
-                </div>
-                <div style="display:flex;gap:8px;align-items:stretch;">
-                  <textarea id="tr-input" placeholder="翻訳したいテキストを入力..." style="flex:1;min-height:44px;max-height:120px;border-radius:10px;border:1.5px solid #D4A0B4;background:#fff;padding:8px 12px;font-size:13px;color:#5a3548;resize:vertical;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#C93F6C';this.style.boxShadow='0 0 0 3px rgba(201,63,108,0.12)'" onblur="this.style.borderColor='#D4A0B4';this.style.boxShadow='none'"></textarea>
-                  <button onclick="runTranslate()" style="padding:0 14px;border-radius:10px;background:linear-gradient(180deg,#F06C98,#D94F7A);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;min-width:50px;">翻訳</button>
-                </div>
-                <div id="tr-result" style="display:none;margin-top:8px;padding:8px 12px;background:#fff;border-radius:10px;border:1px solid #E8CDD5;font-size:13px;color:#5a3548;line-height:1.6;position:relative;">
-                  <div id="tr-result-text"></div>
-                  <button onclick="copyTranslation()" title="コピー" style="position:absolute;top:6px;right:6px;font-size:12px;color:#c6a0ad;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#BE525A';this.style.background='#FBEFF4'" onmouseout="this.style.color='#c6a0ad';this.style.background='none'">📋</button>
-                </div>
-                <div id="tr-loading" style="display:none;margin-top:8px;text-align:center;font-size:12px;color:#c6a0ad;">翻訳中...</div>
-              </div>
               <div class="field">
                 <label for="sg-genre">ジャンル・テーマ *</label>
                 <input id="sg-genre" class="input" type="text" placeholder="例：ライフスタイル、美容、グルメ">
@@ -648,6 +629,25 @@
               <!-- 検索履歴（ボタン下から移動済み） -->
             </div>
             <div id="candidates" class="candidates-area"></div>
+            <!-- 簡易翻訳 -->
+            <div style="margin-top:16px;padding:12px 14px;background:#FFFAFB;border-radius:12px;border:1px solid #F0CDD5;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <div style="font-size:12px;font-weight:700;color:#a06278;">🔄 日中カンタン翻訳</div>
+              </div>
+              <div style="display:flex;gap:6px;margin-bottom:8px;">
+                <button id="tr-dir-ja" class="chip active" onclick="setTransDir('ja2zh')" style="font-size:12px;padding:4px 12px;">日→中</button>
+                <button id="tr-dir-zh" class="chip" onclick="setTransDir('zh2ja')" style="font-size:12px;padding:4px 12px;">中→日</button>
+              </div>
+              <div style="display:flex;gap:8px;align-items:stretch;">
+                <textarea id="tr-input" placeholder="翻訳したいテキストを入力..." style="flex:1;min-height:44px;max-height:120px;border-radius:10px;border:1.5px solid #D4A0B4;background:#fff;padding:8px 12px;font-size:13px;color:#5a3548;resize:vertical;font-family:inherit;outline:none;" onfocus="this.style.borderColor='#C93F6C';this.style.boxShadow='0 0 0 3px rgba(201,63,108,0.12)'" onblur="this.style.borderColor='#D4A0B4';this.style.boxShadow='none'"></textarea>
+                <button onclick="runTranslate()" style="padding:0 14px;border-radius:10px;background:linear-gradient(180deg,#F06C98,#D94F7A);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;min-width:50px;">翻訳</button>
+              </div>
+              <div id="tr-result" style="display:none;margin-top:8px;padding:8px 12px;background:#fff;border-radius:10px;border:1px solid #E8CDD5;font-size:13px;color:#5a3548;line-height:1.6;position:relative;">
+                <div id="tr-result-text"></div>
+                <button onclick="copyTranslation()" title="コピー" style="position:absolute;top:6px;right:6px;font-size:12px;color:#c6a0ad;background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;" onmouseover="this.style.color='#BE525A';this.style.background='#FBEFF4'" onmouseout="this.style.color='#c6a0ad';this.style.background='none'">📋</button>
+              </div>
+              <div id="tr-loading" style="display:none;margin-top:8px;text-align:center;font-size:12px;color:#c6a0ad;">翻訳中...</div>
+            </div>
           </div>
         </div>
       </section>
