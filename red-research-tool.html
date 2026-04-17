@@ -363,7 +363,7 @@
     }
     .speech-bubble {
       position: absolute;
-      top: 10px; left: 55%;
+      top: -30px; left: 55%;
       transform: translateX(-50%);
       background: #ffffff;
       border-radius: 18px;
@@ -533,7 +533,7 @@
     @media (max-width: 600px) {
       .left-character { width: 100px; bottom: 10px; }
       .right-panda { width: 90px; bottom: 10px; }
-      .speech-bubble { padding: 4px 8px; top: 0px; left: 80%; transform: translateX(-40%); }
+      .speech-bubble { padding: 4px 8px; top: -16px; left: 80%; transform: translateX(-40%); }
       .speech-bubble span { font-size: 10px; }
       .card-sakura, .btn-sakura { display: none; }
       .title-sakura-l, .title-sakura-r { display: none; }
@@ -586,12 +586,14 @@
                 <div id="genre-templates" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
               </div>
               <!-- 検索履歴 -->
-              <div id="search-history-area" style="margin-bottom:12px;display:none;">
+              <div id="search-history-area" style="margin-bottom:12px;">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                   <div style="font-size:12px;font-weight:700;color:#a06278;">🕒 検索履歴</div>
-                  <button onclick="clearSearchHistory()" style="font-size:11px;color:#c6a0ad;background:none;border:none;cursor:pointer;">クリア</button>
+                  <button id="history-clear-btn" onclick="clearSearchHistory()" style="font-size:11px;color:#c6a0ad;background:none;border:none;cursor:pointer;display:none;">クリア</button>
                 </div>
-                <div id="search-history-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+                <div id="search-history-list" style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <span style="font-size:11px;color:#C6A0AD;">検索するとここに履歴が表示されます</span>
+                </div>
               </div>
               <div class="field">
                 <label for="sg-genre">ジャンル・テーマ *</label>
@@ -809,10 +811,14 @@
     }
     function renderSearchHistory(){
       const hist=loadSearchHistory();
-      const area=document.getElementById('search-history-area');
       const list=document.getElementById('search-history-list');
-      if(!hist.length){area.style.display='none';return;}
-      area.style.display='block';
+      const clearBtn=document.getElementById('history-clear-btn');
+      if(!hist.length){
+        list.innerHTML='<span style="font-size:11px;color:#C6A0AD;">検索するとここに履歴が表示されます</span>';
+        if(clearBtn)clearBtn.style.display='none';
+        return;
+      }
+      if(clearBtn)clearBtn.style.display='inline';
       list.innerHTML=hist.map(h=>{
         const label=h.note?`${h.genre}（${h.note}）`:h.genre;
         const safeG=h.genre.replace(/'/g,"\\'");
