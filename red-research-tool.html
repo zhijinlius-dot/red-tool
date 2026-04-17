@@ -57,7 +57,7 @@
       max-width: 1530px;
       min-height: 100vh;
       margin: 0 auto;
-      padding: 0 24px 180px;
+      padding: 0 24px 40px;
     }
 
     /* ═══ TOP ═══ */
@@ -336,15 +336,16 @@
 
     /* ═══ Characters: z-index:100, fully opaque ═══ */
     .characters-row {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
+      position: relative;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
       pointer-events: none;
       z-index: 100;
-      max-width: 100vw;
-      overflow: hidden;
+      max-width: 100%;
+      overflow-x: clip;
+      overflow-y: visible;
+      margin-top: -60px;
     }
     .left-character {
       position: relative;
@@ -406,10 +407,7 @@
     /* ═══ Footer ═══ */
     /* Footer sakura background */
     .footer-sakura-bg {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      position: relative;
       height: 220px;
       pointer-events: none;
       z-index: 4;
@@ -422,16 +420,15 @@
     }
     .footer-sakura-bg img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
     .footer {
-      position: fixed;
-      bottom: 55px;
-      left: 50%;
-      transform: translateX(-50%);
+      position: relative;
       display: flex;
       flex-direction: row;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       z-index: 101;
       pointer-events: none;
+      padding: 16px 0 24px;
     }
     .mini-chara {
       width: 55px; height: auto; display: block;
@@ -513,7 +510,7 @@
       .right-panda { width: 250px; }
     }
     @media (max-width: 900px) {
-      .shell { padding: 12px 10px 120px; }
+      .shell { padding: 12px 10px 30px; }
       .top { padding-top: 10px; }
       .logo-img { width: 340px; margin-bottom: 10px; }
       .title { font-size: 20px; }
@@ -535,11 +532,11 @@
     @media (max-width: 600px) {
       .left-character { width: 100px; bottom: 10px; }
       .right-panda { width: 90px; bottom: 10px; }
-      .speech-bubble { padding: 4px 8px; top: -12px; left: 80%; transform: translateX(-40%); }
+      .speech-bubble { padding: 4px 8px; top: 0px; left: 80%; transform: translateX(-40%); }
       .speech-bubble span { font-size: 10px; }
       .card-sakura, .btn-sakura { display: none; }
       .title-sakura-l, .title-sakura-r { display: none; }
-      .shell { padding: 0 8px 100px; }
+      .shell { padding: 0 8px 20px; }
       .petal-card { padding: 12px 10px; border-radius: 14px; }
       .candidate-card { padding: 12px 12px; }
       .candidate-name { font-size: 14px; }
@@ -562,17 +559,6 @@
   <div class="page">
     <div class="shell">
       <section class="top">
-        <!-- ツール説明 -->
-        <div style="max-width:600px;margin:0 auto 12px;padding:12px 16px;background:rgba(255,254,255,0.95);border-radius:14px;border:1.5px solid #D4A0B4;text-align:left;font-size:12px;color:#8E5E6E;line-height:1.7;">
-          <div style="font-weight:800;color:#BE525A;margin-bottom:2px;font-size:13px;">AIが日本企業のRED競合アカウントを自動で見つけます</div>
-          <div style="font-size:11px;color:#A07080;margin-bottom:6px;">小紅書（RED）で活動している日本のブランド・店舗・クリエイターをAIがリストアップ。中国語の検索キーワードも自動生成するので、そのままREDアプリで検索できます。</div>
-          <div style="font-size:11px;color:#8E5E6E;line-height:1.8;">
-            ① ジャンルを選んで<b>「AIめこに探してもらう」</b>をタップ<br>
-            ② 候補の<b>中国語キーワード</b>を📋コピー → <b>REDアプリ</b>で検索<br>
-            ③ 気になるアカウントを<b>一覧に保存</b> → CSV出力やマップで管理
-          </div>
-          <div style="font-size:10px;color:#C6A0AD;margin-top:4px;">※ 初回は「設定」タブでAPIキーを入力してください</div>
-        </div>
         <div class="tab-row">
           <button class="tab active" onclick="go(&#39;search&#39;)">検索</button>
           <button class="tab" onclick="go(&#39;list&#39;)">一覧 (<span id="list-cnt">0</span>)</button>
@@ -584,7 +570,13 @@
         <div class="center-card-wrap">
           <div class="petal-card">
             <div class="form-area">
-              <!-- ツール説明 & 使い方 -->
+              <!-- ツール説明 -->
+              <div style="margin-bottom:14px;padding:10px 14px;background:#FFFAFB;border-radius:12px;border:1px solid #F0CDD5;font-size:12px;color:#8E5E6E;line-height:1.7;">
+                <div style="font-weight:800;color:#BE525A;margin-bottom:2px;font-size:13px;">AIが日本企業のRED競合アカウントを自動で見つけます</div>
+                <div style="font-size:11px;color:#A07080;margin-bottom:5px;">小紅書（RED）で活動している日本のブランド・店舗・クリエイターをAIがリストアップ。中国語の検索キーワードも自動生成します。</div>
+                <div style="font-size:11px;color:#8E5E6E;line-height:1.7;">① ジャンルを選んで「AIめこに探してもらう」をタップ → ② 中国語キーワードを📋コピー → REDアプリで検索 → ③ 一覧に保存</div>
+                <div style="font-size:10px;color:#C6A0AD;margin-top:3px;">※ 初回は「設定」タブでAPIキーを入力してください</div>
+              </div>
               <!-- ジャンル別テンプレート -->
               <div style="margin-bottom:14px;">
                 <div style="font-size:12px;font-weight:700;color:#a06278;margin-bottom:8px;">📂 ジャンルから選ぶ</div>
@@ -725,6 +717,10 @@
         const tabs=['search','list','map','settings'];
         btn.classList.toggle('active',tabs[i]===tab);
       });
+      // 検索タブ以外ではキャラ・フッターを非表示
+      const showChars=tab==='search';
+      document.querySelector('.characters-row').style.display=showChars?'flex':'none';
+      document.querySelector('.footer').style.display=showChars?'flex':'none';
       if(tab==='list'){renderChips();renderTable();}
       if(tab==='search'){renderSearchHistory();}
       if(tab==='map'){renderMap();}
